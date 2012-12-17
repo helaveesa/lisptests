@@ -11,9 +11,9 @@ NIL
 
 все ок, понятно
 
-
+_____________
 Рекурсия
-
+_____________
 проверяем предикат eql
 
 объявляем функцию:
@@ -69,6 +69,60 @@ NIL
 
 
 *****************************************************
+______________________________
+потестим функцию вывода format
+______________________________
+(format t "~A plus ~A equals ~A.~%" 2 3 (+ 2 3))
 
+тестируем:
+
+CL-USER> (format t "~A plus ~A equals ~A.~%" 2 3 (+ 2 3))
+2 plus 3 equals 5.
+NIL
+CL-USER> (format t "~A plus ~A equals ~A.~%" 5 5 (+ 5 5))
+5 plus 5 equals 10.
+NIL
+CL-USER> (format t "~A plus ~A equals ~A.~%" 10 5 (- 10 5))
+10 plus 5 equals 5.
+NIL
+CL-USER> (format t "~A plus ~A equals ~A.~%" 5 8 (- 5 8))
+5 plus 8 equals -3.
+NIL
+
+
+все ок
+__________________________
+тестим функцию чтения read
+__________________________
+обьявляем функцию askem:
+(defun askem (string)
+(format t "~A" string)
+(read))
+
+тестируем:
+объявили:
+CL-USER> (defun askem (string)
+           (format t "~A" string)
+           (read))
+ответ от slime
+ASKEM
+
+вызов функции askem
+CL-USER> (askem "Hello, world!")
+ответ от slime
+Hello, world!
+
+slime выдает приглашение на ввод
+вводим
+Hello
+                                                                                                                                     slime
+                                                                                                                                     выдает
+                                                                                                                                     нам
+                                                                                                                                     то,
+                                                                                                                                     что
+                                                                                                                                     мы ввели
+HELLO
+
+****************************************************************
 
 
