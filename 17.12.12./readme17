@@ -211,3 +211,27 @@ number.
 
 ******************************************************************************
 
+оператор присваивания setf
+
+CL-USER> (setf *glob* 98)
+
+; in: SETF *GLOB*
+;     (SETF *GLOB* 98)
+; ==>
+;   (SETQ *GLOB* 98)
+;
+; caught WARNING:
+;   undefined variable: *GLOB*
+;
+; compilation unit finished
+;   Undefined variable:
+;     *GLOB*
+;   caught 1 WARNING condition
+98
+CL-USER> (let ((n 10))
+           (setf n 2)
+           n)
+2
+
+**********************************************
+
