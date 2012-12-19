@@ -241,3 +241,104 @@ CL-USER> arr
            ячейке 1Х1 соответствует значение B
            ячейке 2Х2 соответствует значение C
 
+можно вместо букв и цифр, передавать целые слова:
+
+вот пример:
+
+CL-USER> (setf arr (make-array '(6 7) :initial-element nil))
+;
+; caught WARNING:
+;   undefined variable: ARR
+;
+; compilation unit finished
+;   Undefined variable:
+;     ARR
+;   caught 1 WARNING condition
+#2A((NIL NIL NIL NIL NIL NIL NIL)
+    (NIL NIL NIL NIL NIL NIL NIL)
+    (NIL NIL NIL NIL NIL NIL NIL)
+    (NIL NIL NIL NIL NIL NIL NIL)
+    (NIL NIL NIL NIL NIL NIL NIL)
+    (NIL NIL NIL NIL NIL NIL NIL))
+CL-USER> (setf (aref arr 0 0) 'mama)
+MAMA
+CL-USER> (setf (aref arr 0 0) 'papa)
+PAPA
+CL-USER> (setf (aref arr 0 0) 'mucya)
+MUCYA
+CL-USER> (setf (aref arr 0 0) 'mama)
+MAMA
+CL-USER> (setf (aref arr 1 1) 'papa)
+PAPA
+CL-USER> (setf (aref arr 2 2) 'musya)
+MUSYA
+CL-USER> (setf (aref arr 3 3) 'me)
+ME
+CL-USER> (setf (aref arr 4 4) 'boy)
+BOY
+CL-USER> (setf *print-array* t)
+T
+CL-USER> arr
+#2A((MAMA NIL NIL NIL NIL NIL NIL)
+    (NIL PAPA NIL NIL NIL NIL NIL)
+    (NIL NIL MUSYA NIL NIL NIL NIL)
+    (NIL NIL NIL ME NIL NIL NIL)
+    (NIL NIL NIL NIL BOY NIL NIL)
+    (NIL NIL NIL NIL NIL NIL NIL))
+
+__________
+ВЕКТОР
+__________
+
+вектор - это тоже массив, только одномерный,
+когда в функцию, которая создает массив
+make-array
+
+передается целое число
+
+(setf vec (make-array 4 :initial-element nil))
+
+в данном случае это число 4
+
+CL-USER> (setf vec (make-array 4 :initial-element nil))
+
+; in: SETF VEC
+;     (SETF VEC (MAKE-ARRAY 4 :INITIAL-ELEMENT NIL))
+; ==>
+;   (SETQ VEC (MAKE-ARRAY 4 :INITIAL-ELEMENT NIL))
+;
+; caught WARNING:
+;   undefined variable: VEC
+;
+; compilation unit finished
+;   Undefined variable:
+;     VEC
+;   caught 1 WARNING condition
+#(NIL NIL NIL NIL)
+
+создает и заполняет вектор функция vector
+(вполне себе логично)
+
+(vector "a" ’b 3)
+#("a" B 3)
+
+или
+
+CL-USER> (vector "lisp" 'v 5)
+#("lisp" V 5)
+
+Доступ к элементам вектора
+осуществляется, через функцию svref
+
+> (svref vec 0)
+NIL
+
+попробуем на своем примере:
+
+???
+
+надо разбираться
+
+
+
+
