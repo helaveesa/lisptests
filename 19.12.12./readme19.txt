@@ -340,5 +340,31 @@ NIL
 надо разбираться
 
 
+_______________
 
+Строки и знаки
+
+________________
+
+CL-USER> (aref "abc" 1)
+#\b
+CL-USER> (aref "abc" 2)
+#\c
+CL-USER> (aref "abc" 3)
+; Evaluation aborted on #<SB-INT:INVALID-ARRAY-INDEX-ERROR
+expected-type: (INTEGER 0 (3)) datum: 3>.
+CL-USER> (aref "abc" 0)
+#\a
+CL-USER> (let ((str (copy-seq "Merlin")))
+           (setf (char str 3) #\k)
+           str)
+"Merkin"
+CL-USER> (let ((str (copy-seq "Helen")))
+           (setf (char str 0) #\P)
+           (setf (char str 1) #\u)
+           (setf (char str 2) #\s)
+           (setf (char str 3) #\i)
+           (setf (char str 4) #\k)
+           str)
+"Pusik"
 
