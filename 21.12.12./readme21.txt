@@ -545,6 +545,278 @@ CL-USER> (documentation 'some 'function)
    non-NIL value encountered, or NIL if the end of any sequence is
    reached."
 
+CL-USER> (documentation 'aref 'function)
+"Return the element of the ARRAY specified by the SUBSCRIPTS."
+CL-USER> (documentation 'svref 'function)
+"Return the INDEX'th element of the given Simple-Vector."
+CL-USER> (documentation 'char 'function)
+"Given a string and a non-negative integer index less than the length of
+  the string, returns the character object representing the character at
+  that position in the string."
+CL-USER> (documentation 'elt 'function)
+"Return the element of SEQUENCE specified by INDEX."
+CL-USER> (documentation 'mirror? 'function)
+NIL
+CL-USER> (documentation '< 'function)
+"Return T if its arguments are in strictly increasing order, NIL otherwise."
+CL-USER> (documentation '> 'function)
+"Return T if its arguments are in strictly decreasing order, NIL otherwise."
+CL-USER> (documentation '<= 'function)
+"Return T if arguments are in strictly non-decreasing order, NIL otherwise."
+CL-USER> (documentation '>= 'function)
+"Return T if arguments are in strictly non-increasing order, NIL otherwise."
+CL-USER> (documentation '= 'function)
+"Return T if all of its arguments are numerically equal, NIL otherwise."
+CL-USER> (documentation 'find 'function)
+NIL
+CL-USER> (documentation 'find-if 'function)
+NIL
+CL-USER> (documentation 'position-if 'function)
+NIL
+CL-USER> (documentation 'remove-duplicates 'function)
+"The elements of SEQUENCE are compared pairwise, and if any two match,
+   the one occurring earlier is discarded, unless FROM-END is true, in
+   which case the one later in the sequence is discarded. The resulting
+   sequence is returned.
+
+   The :TEST-NOT argument is deprecated."
+CL-USER> (documentation 'reduce 'function)
+NIL
+CL-USER> (documentation 'tokens 'function)
+NIL
+CL-USER> (documentation 'defstruct 'function)
+"DEFSTRUCT {Name | (Name Option*)} {Slot | (Slot [Default] {Key Value}*)}
+   Define the structure type Name. Instances are created by MAKE-<name>,
+   which takes &KEY arguments allowing initial slot values to the specified.
+   A SETF'able function <name>-<slot> is defined for each slot to read and
+   write slot values. <name>-p is a type predicate.
+
+   Popular DEFSTRUCT options (see manual for others):
+
+   (:CONSTRUCTOR Name)
+   (:PREDICATE Name)
+       Specify the name for the constructor or predicate.
+
+   (:CONSTRUCTOR Name Lambda-List)
+       Specify the name and arguments for a BOA constructor
+       (which is more efficient when keyword syntax isn't necessary.)
+
+   (:INCLUDE Supertype Slot-Spec*)
+       Make this type a subtype of the structure type Supertype. The optional
+       Slot-Specs override inherited slot options.
+
+   Slot options:
+
+   :TYPE Type-Spec
+       Asserts that the value of this slot is always of the specified type.
+
+   :READ-ONLY {T | NIL}
+       If true, no setter function is defined for this slot."
+CL-USER> (documentation 'push 'function)
+"Takes an object and a location holding a list. Conses the object onto
+  the list, returning the modified list. OBJ is evaluated before PLACE."
+CL-USER> (documentation 'pop 'function)
+"The argument is a location holding a list. Pops one item off the front
+  of the list and returns it."
+CL-USER> (documentation 'pushnew 'function)
+"Takes an object and a location holding a list. If the object is
+  already in the list, does nothing; otherwise, conses the object onto
+  the list. Returns the modified list. If there is a :TEST keyword, this
+  is used for the comparison."
+CL-USER> (documentation 'assoc 'function)
+"Return the cons in ALIST whose car is equal (by a given test or EQL) to
+   the ITEM."
+CL-USER> (documentation 'assoc-if 'function)
+"Return the first cons in ALIST whose CAR satisfies PREDICATE. If
+   KEY is supplied, apply it to the CAR of each cons before testing."
+CL-USER> (documentation 'bfs 'function)
+NIL
+CL-USER> (documentation 'make-array 'function)
+NIL
+CL-USER> (documentation 'arr 'function)
+NIL
+CL-USER> (documentation 'vector 'function)
+"Construct a SIMPLE-VECTOR from the given objects."
+CL-USER> (documentation 'svref 'function)
+"Return the INDEX'th element of the given Simple-Vector."
+CL-USER> (documentation 'bin-search 'function)
+NIL
+CL-USER> (documentation 'round 'function)
+"Rounds number (or number/divisor) to nearest integer.
+  The second returned value is the remainder."
+CL-USER> (documentation 'let 'function)
+"LET ({(var [value]) | var}*) declaration* form*
+
+During evaluation of the FORMS, bind the VARS to the result of evaluating the
+VALUE forms. The variables are bound in parallel after all of the VALUES forms
+have been evaluated."
+CL-USER> (documentation 'obj 'function)
+NIL
+CL-USER> (documentation 'range 'function)
+NIL
+CL-USER> (documentation 'finder 'function)
+NIL
+CL-USER> (documentation 'char-code 'function)
+"Return the integer code of CHAR."
+CL-USER> (documentation 'string-equal 'function)
+"Given two strings (string1 and string2), and optional integers start1,
+  start2, end1 and end2, compares characters in string1 to characters in
+  string2 (using char-equal)."
+
+CL-USER> (documentation 'concatenate 'function)
+"Return a new sequence of all the argument sequences concatenated together
+  which shares no structure with the original argument sequences of the
+  specified OUTPUT-TYPE-SPEC."
+CL-USER> (documentation 'bst-find 'function)
+NIL
+CL-USER> (documentation 'percolate 'function)
+NIL
+CL-USER> (documentation 'princ 'function)
+"Output an aesthetic but not necessarily READable printed representation
+  of OBJECT on the specified STREAM."
+CL-USER> (documentation 'make-hash-table 'function)
+"Create and return a new hash table. The keywords are as follows:
+
+  :TEST
+    Determines how keys are compared. Must a designator for one of the
+    standard hash table tests, or a hash table test defined using
+    SB-EXT:DEFINE-HASH-TABLE-TEST. Additionally, when an explicit
+    HASH-FUNCTION is provided (see below), any two argument equivalence
+    predicate can be used as the TEST.
+
+  :SIZE
+    A hint as to how many elements will be put in this hash table.
+
+  :REHASH-SIZE
+    Indicates how to expand the table when it fills up. If an integer, add
+    space for that many elements. If a floating point number (which must be
+    greater than 1.0), multiply the size by that amount.
+
+  :REHASH-THRESHOLD
+    Indicates how dense the table can become before forcing a rehash. Can be
+    any positive number <=1, with density approaching zero as the threshold
+    approaches 0. Density 1 means an average of one entry per bucket.
+
+  :HASH-FUNCTION
+    If NIL (the default), a hash function based on the TEST argument is used,
+    which then must be one of the standardized hash table test functions, or
+    one for which a default hash function has been defined using
+    SB-EXT:DEFINE-HASH-TABLE-TEST. If HASH-FUNCTION is specified, the TEST
+    argument can be any two argument predicate consistent with it. The
+    HASH-FUNCTION is expected to return a non-negative fixnum hash code.
+
+  :WEAKNESS
+    When :WEAKNESS is not NIL, garbage collection may remove entries from the
+    hash table. The value of :WEAKNESS specifies how the presence of a key or
+    value in the hash table preserves their entries from garbage collection.
+
+    Valid values are:
+
+      :KEY means that the key of an entry must be live to guarantee that the
+        entry is preserved.
+
+      :VALUE means that the value of an entry must be live to guarantee that
+        the entry is preserved.
+
+      :KEY-AND-VALUE means that both the key and the value must be live to
+        guarantee that the entry is preserved.
+
+      :KEY-OR-VALUE means that either the key or the value must be live to
+        guarantee that the entry is preserved.
+
+      NIL (the default) means that entries are always preserved.
+
+  :SYNCHRONIZED
+    If NIL (the default), the hash-table may have multiple concurrent readers,
+    but results are undefined if a thread writes to the hash-table
+    concurrently with another reader or writer. If T, all concurrent accesses
+    are safe, but note that CLHS 3.6 (Traversal Rules and Side Effects)
+    remains in force. See also: SB-EXT:WITH-LOCKED-HASH-TABLE. This keyword
+    argument is experimental, and may change incompatibly or be removed in the
+    future."
+CL-USER> (documentation 'gethash 'function)
+"Finds the entry in HASH-TABLE whose key is KEY and returns the
+associated value and T as multiple values, or returns DEFAULT and NIL
+if there is no such entry. Entries can be added using SETF."
+CL-USER> (documentation 'remhash 'function)
+"Remove the entry in HASH-TABLE associated with KEY. Return T if
+there was such an entry, or NIL if not."
+CL-USER> (documentation 'maphash 'function)
+"For each entry in HASH-TABLE, call the designated two-argument function on
+the key and value of the entry. Return NIL.
+
+Consequences are undefined if HASH-TABLE is mutated during the call to
+MAPHASH, except for changing or removing elements corresponding to the
+current key. The applies to all threads, not just the current one --
+even for synchronized hash-tables. If the table may be mutated by
+another thread during iteration, use eg. SB-EXT:WITH-LOCKED-HASH-TABLE
+to protect the MAPHASH call."
+CL-USER> (documentation 'progn 'function)
+"PROGN form*
+
+Evaluates each FORM in order, returning the values of the last form. With no
+forms, returns NIL."
+CL-USER> (documentation 'block 'function)
+"BLOCK name form*
+
+Evaluate the FORMS as a PROGN. Within the lexical scope of the body,
+RETURN-FROM can be used to exit the form."
+CL-USER> (documentation 'tagbody 'function)
+"TAGBODY {tag | statement}*
+
+Define tags for use with GO. The STATEMENTS are evaluated in order ,skipping
+TAGS, and NIL is returned. If a statement contains a GO to a defined TAG
+within the lexical scope of the form, then control is transferred to the next
+statement following that tag. A TAG must an integer or a symbol. A STATEMENT
+must be a list. Other objects are illegal within the body."
+CL-USER> (documentation 'return 'function)
+NIL
+CL-USER> (documentation 'go 'function)
+"GO tag
+
+Transfer control to the named TAG in the lexically enclosing TAGBODY. This is
+constrained to be used only within the dynamic extent of the TAGBODY."
+CL-USER> (documentation 'let* 'function)
+"LET* ({(var [value]) | var}*) declaration* form*
+
+Similar to LET, but the variables are bound sequentially, allowing each VALUE
+form to reference any of the previous VARS."
+CL-USER> (documentation 'if 'function)
+"IF predicate then [else]
+
+If PREDICATE evaluates to true, evaluate THEN and return its values,
+otherwise evaluate ELSE and return its values. ELSE defaults to NIL."
+CL-USER> (documentation 'case 'function)
+"CASE Keyform {({(Key*) | Key} Form*)}*
+  Evaluates the Forms in the first clause with a Key EQL to the value of
+  Keyform. If a singleton key is T then the clause is a default clause."
+CL-USER> (documentation 'values 'function)
+"Return all arguments, in order, as values."
+CL-USER> (documentation 'multiple-value-bind 'function)
+NIL
+CL-USER> (documentation 'catch 'function)
+"CATCH tag form*
+
+Evaluate TAG and instantiate it as a catcher while the body forms are
+evaluated in an implicit PROGN. If a THROW is done to TAG within the dynamic
+scope of the body, then control will be transferred to the end of the body and
+the thrown values will be returned."
+CL-USER> (documentation 'throw 'function)
+"THROW tag form
+
+Do a non-local exit, return the values of FORM from the CATCH whose tag is EQ
+to TAG."
+CL-USER> (documentation 'mod 'function)
+"Return second result of FLOOR."
+CL-USER> (documentation 'fboundp 'function)
+"Return true if name has a global function definition."
+CL-USER> (documentation 'symbol-function 'function)
+"Return SYMBOL's current function definition. Settable with SETF."
+CL-USER> (documentation 'primo 'function)
+NIL
+
+***************************************************************************************
+
 
 
 
