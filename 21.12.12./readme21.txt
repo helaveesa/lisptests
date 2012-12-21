@@ -141,13 +141,74 @@ CL-USER> (cons '(pasha (kate)) '(lesha (darina)))
 CL-USER> (cons 'a '(nil))
 (A NIL)
 
+CL-USER> (cons 'a nil)
+(A)
+
 CL-USER> (cons 'a '())
 (A)
 
 CL-USER> (cons '() 'a)
 (NIL . A)
 
+
+
+
 Использование cons и list
+
+функция cons - строит списки, если ее второй агумент список,
+то она возвращает новый список, с первым аргументом, добавляя его в
+начало
+т.е. (cons 'a '(b c d))
+вернет (A B C D)
+'a - первый аргумент
+'(b c d) - второй аргумент функции cons
+следовательно,
+функция взяла первый аргумент 'a  и положила его в начало списка (b c
+d),
+создав этим новый список (a b c d)
+
+
+функция list - для создания списков
+более я ничего не могу о ней сказать
+
+
+CL-USER> (cons 'a (cons 'b nil))
+(A B)
+
+но так очень долго,
+можно короче и быстрее,
+с помощью функции list:
+
+CL-USER> (list 'a 'b)
+(A B)
+
+CL-USER> (list 'a 'b 'c)
+(A B C)
+
+CL-USER> (list 'af 'bc 'de)
+(AF BC DE)
+
+CL-USER> (list 'pasha 'lesha 'vadim)
+(PASHA LESHA VADIM)
+
+CL-USER> (list 'pasha '(kate) 'lesha '(sam) 'vadim '(gala))
+(PASHA (KATE) LESHA (SAM) VADIM (GALA))
+
+CL-USER> (list '(pasha (kate)) '(lesha (sam)) '(vadim gala))
+((PASHA (KATE)) (LESHA (SAM)) (VADIM GALA))
+
+
+
+_________________
+
+Истинность
+_________________
+
+
+
+
+
+
 
 
 
