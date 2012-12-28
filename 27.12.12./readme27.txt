@@ -1725,10 +1725,70 @@ ___________
 
 Блоки
 
+три основных оператора для создания блоков кода
+
+progn, block, tagbody
+
+> (progn
+(format t "a")
+(format t "b")
+(+ 11 12))
+ab
+23
+
+
+
+> (block head
+(format t "Here we go.")
+(return-from head ’idea)
+(format t "We’ll never see this. "))
+Here we go.
+IDEA
+
+> (block nil
+(return 27))
+27
+
+
+
+> (dolist (x ’(a b c d e))
+(format t "~A " x)
+(if (eql x ’c)
+(return ’done)))
+A B C
+DONE
+
+
+с пмощью return-from
+можно написать улучшенный вариант функции read-integer
+
+(defun read-integer (str)
+  (let ((accum 0))
+    (dotimes (pos (length str))
+      (let ((i (digit-char-p (char str pos))))
+        (if i
+            (setf accum (+ (* accum 10) i))
+            (return-from read-integer nil))))
+    accum))
 
 
 
 
+
+и наконец третий оператор
+
+> (tagbody
+(setf x 0)
+top
+(setf x (+ x 1))
+(format t "~A " x)
+(if (< x 10) (go top)))
+1 2 3 4 5 6 7 8 9 10
+NIL
+
+
+
+Контекст
 
 
 
