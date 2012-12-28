@@ -1183,22 +1183,547 @@ NIL
 
 Строки и знаки
 
+#\c - одиночный знак
+
+функция char-code
+которая возвращает связанное со знаком число
+
+функция code-char
+делает обратное преобразование
+
+существуют функции стрвнения знаков и строк
+
+> (sort "elbow" #’char<)
+"below"
+
+
+aref - получить знак из конкретной позиции
+
+> (aref "abc" 1)
+#\b
+
+или с помощью функции char
+быстрее получится
+
+> (char "abc" 1)
+#\b
+
+
+соединение функций setf и char
+для замены элементов
+
+> (let ((str (copy-seq "Merlin")))
+    (setf (char str 3) #\k)
+    str)
+"Merkin"
+
+
+
+функция string-equal сравнивает две строки учитывая регистр
+
+> (equal "fred" "fred")
+T
+> (equal "fred" "Fred")
+NIL
+> (string-equal "fred" "Fred")
+T
+
+
+
+функция format для создания строк
+
+> (format nil "~A or ~A" "truth" "dare")
+"truth or dare"
+
+функция concatenate для соединения строк
+
+> (concatenate ’string "not " "to worry")
+"not to worry"
+
+
+
+Последовательности
+
+remove, length, subseq, reverse, sort, every, some
+
+elt - доступ к элементу последовательности любого типа
+
+> (elt ’(a b c) 1)
+B
+
+с помощью elt функция mirror?
+может быть оптимизирована для векторов
+
+(defun mirror? (s)
+  (let ((len (length s)))
+    (and (evenp len)
+         (do ((forward 0 (+ forward 1))
+              (back (- len 1) (- back 1)))
+             ((or (> forward back)
+                  (not (eql (elt s forward)
+                            (elt s back))))
+             (> forward back))))))
+
+
+функция position - возвращает положение определнного элемента в
+последовательности и nil в случае отсутствия
+
+> (position #\a "fantasia")
+1
+> (position #\a "fantasia" :start 3 :end 5)
+4
+> (position #\a "fantasia" :from-end t)
+7
+> (position ’a ’((c d) (a b)) :key #’car)
+1
+> (position ’(a b) ’((a b) (c d)))
+NIL
+> (position ’(a b) ’((a b) (c d)) :test #’equal)
+0
+> (position 3 ’(1 0 7 5) :test #’<)
+2
+
+
+
+subseq и position
+можно разделить последовательность на части
+
+функция
+
+(defun second-word (str)
+  (let ((p1 (+ (position #\ str) 1)))
+    (subseq str p1 (position #\ str :start p1))))
+
+возвращает второе слово в предложении
+вызов
+
+> (second-word "Form follows function.")
+"follows"
+
+
+
+position-if - поиск элементов, удовлетворяющих заданному предикату
+
+> (position-if #’oddp ’(2 3 4 5))
+1
+
+
+find - функция аналогичная member-if но для последовательностей
+
+> (find #\a "cat")
+#\a
+> (find-if #’characterp "ham")
+#\h
+
+
+(find ’complete lst :key #’car)
+
+
+remove-duplicates - удаляет все повторяющиеся элементы
+последовательности, кроме последнего
+
+> (remove-duplicates "abracadabra")
+"cdbra"
+
+
+функция reduce - сводит последовательность в одно значение
+
+(reduce #’fn ’(a b c d))
+эквивалентно
+(fn (fn (fn ’a ’b) ’c) ’d)
+
+
+reduce - расширение набора аргументов для
+функций которые принимают только два аргумента
+
+> (reduce #’intersection ’((b r a d ’s) (b a d) (c a t)))
+(A)
+
+
+
+ПРИМЕР
+РАЗБОР ДАТ
+
+распознавание символов
+
+(defun tokens (str test start)
+  (let ((p1 (position-if test str :start start)))
+    (if p1
+        (let ((p2 (position-if #’(lambda (c)
+                                   (not (funcall test c)))
+                               str :start p1)))
+         (cons (subseq str p1 p2)
+               (if p2
+                   (tokens str test p2)
+                   nil)))
+        nil)))
+
+
+(defun constituent (c)
+  (and (graphic-char-p c)
+       (not (char= c #\ ))))
+
+вызов
+
+> (tokens "ab12 3cde.f
+           gh" #’constituent 0)
+("ab12" "3cde.f" "gh")
+
+
+
+функции для разбора дат
+
+(defun parse-date (str)
+  (let ((toks (tokens str #’constituent 0)))
+    (list (parse-integer (first toks))
+          (parse-month (second toks))
+          (parse-integer (third toks)))))
+
+
+(defconstant month-names
+  #("jan" "feb" "mar" "apr" "may" "jun"
+    "jul" "aug" "sep" "oct" "nov" "dec"))
+
+
+(defun parse-month (str)
+  (let ((p (position str month-names
+                     :test #’string-equal)))
+    (if p
+        (+ p 1)
+        nil)))
+
+
+
+
+вызов к первой функции
+> (parse-date "16 Aug 1980")
+(16 8 1980)
 
 
 
 
 
 
+Структуры
+
+специальные функции
+
+(defun block-height (b) (svref b 0))
+
+функция которая определяет структуру - defstruct
+
+(defstruct point
+  x
+  y)
+
+
+неявно были заданы функции
+make-point, point-p, copy-point, point-x, point-y
+
+каждый вызов make-point
+> (setf p (make-point :x 0 :y 0))
+#S(POINT X 0 Y 0)
+
+
+setf - определяет функции доступа к полям структуры
+
+> (point-x p)
+0
+> (setf (point-y p) 2)
+2
+> p
+#S(POINT X 0 Y 2)
+
+
+проверка типа - point-p
+
+> (point-p p)
+T
+> (typep p ’point)
+T
+
+
+
+typep - проверяет объект на принадлежность к заданному типу
+
+(defstruct polemic
+  (type (progn
+           (format t "What kind of polemic was it? ")
+           (read)))
+  (effect nil))
+
+
+
+вызов make-polemic
+без доп. аргументов усьановит исходное значение полей
+
+> (make-polemic)
+What kind of polemic was it? scathing
+#S(POLEMIC TYPE SCATHING EFFECT NIL)
+
+
+
+
+определение структуры point
+
+(defstruct (point (:conc-name p)
+                  (:print-function print-point))
+  (x 0)
+  (y 0))
+
+
+(defun print-point (p stream depth)
+  (format stream "#<~A, ~A>" (px p) (py p)))
+
+функция print-point
+будет отображать структуру в сокращенной форме:
+
+> (make-point)
+#<0,0>
+
+
+
+ПРИМЕР
+ДВОИЧНЫЕ ДЕРЕВЬЯ ПОИСКА
+
+
+ДВОИЧНЫЕ ДЕРЕВЬЯ ПОИСКА
+поиск и вставка
+
+(defstruct (node (:print-function
+                   (lambda (n s d)
+                     (format s "#<~A>" (node-elt n)))))
+  elt (l nil) (r nil))
+
+
+(defun bst-insert (obj bst <)
+  (if (null bst)
+      (make-node :elt obj)
+      (let ((elt (node-elt bst)))
+        (if (eql obj elt)
+            bst
+            (if (funcall < obj elt)
+                (make-node
+                   :elt elt
+                   :l (bst-insert obj (node-l bst) <)
+                   :r (node-r bst))
+                (make-node
+                   :elt elt
+                   :r (bst-insert obj (node-r bst) <)
+                   :l (node-l bst)))))))
+
+
+(defun bst-find (obj bst <)
+  (if (null bst)
+      nil
+      (let ((elt (node-elt bst)))
+        (if (eql obj elt)
+            bst
+            (if (funcall < obj elt)
+                (bst-find obj (node-l bst) <)
+                (bst-find obj (node-r bst) <))))))
+
+
+(defun bst-min (bst)
+  (and bst
+       (or (bst-min (node-l bst)) bst)))
+
+
+(defun bst-max (bst)
+  (and bst
+       (or (bst-max (node-r bst)) bst)))
+
+
+вызовы
+
+> (bst-min nums)
+#<1>
+> (bst-max nums)
+#<9>
+
+
+ДВОИЧНЫЕ ДЕРЕВЬЯ ПОИСКА
+удаление
+
+
+(defun bst-remove (obj bst <)
+  (if (null bst)
+      nil
+      (let ((elt (node-elt bst)))
+        (if (eql obj elt)
+            (percolate bst)
+            (if (funcall < obj elt)
+                (make-node
+                  :elt elt
+                  :l (bst-remove obj (node-l bst) <)
+                  :r (node-r bst))
+                (make-node
+                  :elt elt
+                  :r (bst-remove obj (node-r bst) <)
+                  :l (node-l bst)))))))
+
+
+(defun percolate (bst)
+  (let ((l (node-l bst)) (r (node-r bst)))
+    (cond ((null l) r)
+          ((null r) l)
+          (t (if (zerop (random 2))
+                 (make-node :elt (node-elt (bst-max l))
+                   :r r
+                   :l (bst-remove-max l))
+                 (make-node :elt (node-elt (bst-min r))
+                   :r (bst-remove-min r)
+                   :l l))))))
+
+
+(defun bst-remove-min (bst)
+  (if (null (node-l bst))
+      (node-r bst)
+      (make-node :elt (node-elt bst)
+                 :l (bst-remove-min (node-l bst))
+                 :r (node-r bst))))
+
+
+(defun bst-remove-max (bst)
+  (if (null (node-r bst))
+      (node-l bst)
+      (make-node :elt (node-elt bst)
+                 :l (node-l bst)
+                 :r (bst-remove-max (node-r bst)))))
+
+вызовы
+
+> (setf nums (bst-remove 2 nums #’<))
+#<5>
+> (bst-find 2 nums #’<)
+NIL
+
+
+
+
+ДВОИЧНЫЕ ДЕРЕВЬЯ ПОИСКА
+обход
+
+(defun bst-traverse (fn bst)
+  (when bst
+    (bst-traverse fn (node-l bst))
+    (funcall fn (node-elt bst))
+    (bst-traverse fn (node-r bst))))
+
+вызов
+
+> (bst-traverse #’princ nums)
+13456789
+NIL
 
 
 
 
 
+Хеш-таблицы
+
+создание хеш-таблицы - функция make-hash-table
+
+> (setf ht (make-hash-table))
+#<Hash-Table BF0A96>
+
+
+gethash - чтобы получить значение, связанное
+с заданным ключом
+
+> (gethash ’color ht)
+NIL
+NIL
+
+по умолчанию, nil - не нашел искомого элемента
+
+используя setf и gethash
+можно сопоставить новое значение какому-либо ключу
+
+> (setf (gethash ’color ht) ’red)
+RED
+
+вызов
+
+> (gethash ’color ht)
+RED
+T
+
+венул установленное значение
+
+работа с хеш-таблицами
+
+> (setf bugs (make-hash-table))
+#<Hash-Table BF4C36>
+> (push "Doesn’t take keyword arguments. "
+        (gethash #’our-member bugs))
+("Doesn’t take keyword arguments. ")
 
 
 
 
+используя setf и gethash
+можно добавить элемент в множество, представленное в виде
+хеш-таблицы
 
+> (setf fruit (make-hash-table))
+#<Hash-Table BFDE76>
+> (setf (gethash ’apricot fruit) t)
+T
+
+
+проверка на принадлежность элемента множеству выполняется
+с помощью gethash
+
+> (gethash ’apricot fruit)
+T
+T
+
+
+remhash - чтобы удалить элемент из множества
+
+> (remhash ’apricot fruit)
+T
+
+
+maphash - для итерации хеш-таблицы
+
+> (setf (gethash ’shape ht) ’spherical
+        (gethash ’size ht) ’giant)
+GIANT
+> (maphash #’(lambda (k v)
+               (format t "~A = ~A~%" k v))
+           ht)
+SHAPE = SPHERICAL
+SIZE = GIANT
+COLOR = RED
+NIL
+
+
+параметр :size
+определяет кол-во пар ключ-значение
+
+(make-hash-table :size 5)
+
+использование ключа test
+
+> (setf writers (make-hash-table :test #’equal)
+#<Hash-Table C005E6>
+> (setf (gethash ’(ralph waldo emerson) writers) t)
+T
+
+
+
+
+____________
+
+глава 5
+Управление
+
+___________
+
+
+Блоки
 
 
 
