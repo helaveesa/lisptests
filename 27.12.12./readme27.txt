@@ -929,7 +929,276 @@ T
 
 
 
-Стопка (стек)
+Стопка (stack)
+
+макросы для работы со стеком:
+
+push и pop
+
+(push x y) - кладет объект x на вершину стопки y
+
+(pop x) - снимает со стопки верхний элемент
+
+определим эти макросы с помощью setf
+
+вызов (push obj lst)
+транслируется в (setf lst (cons obj lst))
+
+вызов (pop lst)
+транслируется в (let ((x (car lst))
+                  (setf lst (cdr lst))
+                  x)
+
+пример:
+
+> (setf x ’(b))
+(B)
+> (push ’a x)
+(A B)
+> x
+(A B)
+> (setf y x)
+(A B)
+> (pop x)
+A
+> x
+(B)
+> y
+(A B)
+
+
+
+с помощью push
+можно определить итеративный вариант функции reverse для списков
+
+(defun our-reverse (lst)
+  (let ((acc nil))
+    (dolist (elt lst)
+      (push elt acc))
+    acc))
+
+
+Макрос pushnew похож на push
+но использует adjoin вместо cons
+
+> (let ((x ’(a b)))
+     (pushnew ’c x)
+     (pushnew ’a x)
+     x)
+(C A B)
+
+
+
+
+Точечные пары
+
+Определим предикат, который возвращает истину
+только для правильного списка (т.е. для nil, cons-ячейки
+у которой cdr - правильный список)
+
+(defun proper-list? (x)
+  (or (null x)
+      (and (consp x)
+           (proper-list? (cdr x)))))
+
+
+
+с помощью cons можно создавать не только правильные списки
+но и структуры, содержащие ровно два элемента, где car - первый
+элемент структуры,а cdr - второй.
+
+> (setf pair (cons ’a ’b))
+(A . B)
+ячейка как точечная пара
+
+> ’(a . (b . (c . nil)))
+(A B C)
+
+> (cons ’a (cons ’b (cons ’c ’d)))
+(A B C . D)
+
+
+
+Ассоциативные списки (alist)
+
+> (setf trans ’((+ . "add") (- . "subtract")))
+((+ . "add") (- . "subtract"))
+
+
+функция assoc
+для получения по ключу соответствующей ему пары в таком списке
+
+> (assoc ’+ trans)
+(+ . "add")
+> (assoc ’* trans)
+NIL
+
+
+определим упрощенную функцию assoc
+
+(defun our-assoc (key alist)
+  (and (consp alist)
+       (let ((pair (car alist)))
+         (if (eql key (car pair))
+             pair
+             (our-assoc key (cdr alist))))))
+
+аналогично функции member-if есть функция assoc-if
+
+ПРИМЕР
+ПОИСК КРАТЧАЙШЕГО ПУТИ
+
+поиск в ширину:
+
+(defun shortest-path (start end net)
+  (bfs end (list (list start)) net))
+
+
+(defun bfs (end queue net)
+  (if (null queue)
+      nil
+      (let ((path (car queue)))
+        (let ((node (car path)))
+          (if (eql node end)
+              (reverse path)
+              (bfs end
+                   (append (cdr queue)
+                           (new-paths path node net))
+                   net))))))
+
+
+(defun new-paths (path node net)
+  (mapcar #’(lambda (n)
+            (cons n path))
+          (cdr (assoc node net))))
+
+
+вызов:
+
+> (shortest-path ’a ’d min)
+(A C D)
+
+каждый вызов bfs
+
+((A))
+((B A) (C A))
+((C A) (C B A))
+((C B A) (D C A))
+((D C A) (D C B A))
+
+
+___________________________________
+
+глава 4
+Специализированные структуры данных
+___________________________________
+
+
+Массивы
+
+массивы создаются функцией make-array
+создадим массив 2Х3
+
+> (setf arr (make-array ’(2 3) :initial-element nil))
+#<Simple-Array T (2 3) BFC4FE>
+
+
+aref - получить элемнт массива
+отсчет начинается с нуля
+
+> (aref arr 0 0)
+NIL
+
+
+setf - установить новое значение элемента массива
+
+> (setf (aref arr 0 0) ’b)
+B
+> (aref arr 0 0)
+B
+
+
+синтаксис #na - буквальное задание массива
+n - кол-во размерностей массива
+
+#2a((b nil nil) (nil nil nil))
+
+если глобальная переменная *print-array* установлена в t
+массивы напечатаются так
+
+> (setf *print-array* t)
+T
+> arr
+#2A((B NIL NIL) (NIL NIL NIL))
+
+
+
+создание одномерного массива
+> (setf vec (make-array 4 :initial-element nil))
+#(NIL NIL NIL NIL)
+
+
+одномерный массив - вектор
+создание вектора с помощью функции vector
+
+> (vector "a" ’b 3)
+#("a" B 3)
+
+
+aref - доступ к элементам вектора
+но быстрее с эти справится svref
+
+> (svref vec 0)
+NIL
+
+
+ПРИМЕР
+БИНАРНЫЙ ПОИСК
+
+поиск в отсортированном векторе
+
+(defun bin-search (obj vec)
+  (let ((len (length vec)))
+    (and (not (zerop len))
+         (finder obj vec 0 (- len 1)))))
+
+
+(defun finder (obj vec start end)
+  (let ((range (- end start)))
+    (if (zerop range)
+        (if (eql obj (aref vec start))
+            obj
+            nil)
+        (let ((mid (+ start (round (/ range 2)))))
+          (let ((obj2 (aref vec mid)))
+            (if (< obj obj2)
+                (finder obj vec start (- mid 1))
+                (if (> obj obj2)
+                    (finder obj vec (+ mid 1) end)
+                    obj)))))))
+
+
+
+
+
+Строки и знаки
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
