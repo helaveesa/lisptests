@@ -1790,16 +1790,345 @@ NIL
 
 Контекст
 
+оператор let
+позволяет задавать новые переменные, котоые действуют внутри его тела
+
+> (let ((x 7)
+        (y 2))
+    (format t "Number")
+    (+ x y))
+Number
+9
+
+
+операторы типа let
+создают новый лексический контент
+
+(let ((x 2)
+      (y (+ x 1)))
+  (+ x y))
+
+((lambda (x y) (+ x y)) 2
+                        (+ x 1))
+
+
+
+оператор let*
+чтобы одна переменная в let-вызове зависела от другой
+
+> (let* ((x 1)
+(y (+ x 1)))
+(+ x y))
+3
+
+
+
+Макрос destructing-bind
+
+> (destructing-bind (w (x y) . z) ’(a (b c) d e)
+(list w x y z))
+(A B C (D E))
+
+
+Условные выржения
+
+if
+наиболее простой условный оператор
+
+when
+оператор упрощения if
+
+
+(when (oddp that)
+  (format t "Hmm, that’s odd. ")
+  (+ that 1))
+
+эквивалентно
+
+(if (oddp that)
+    (progn
+      (format t "Hmm, that’s odd. ")
+      (+ that 1)))
+
+
+оператор unless
+противоположен оператору when
+
+
+определим функцию our-member
+
+(defun our-member (obj lst)
+  (if (atom lst)
+      nil
+   (if (eql (car lst) obj)
+       lst
+       (our-member obj (cdr lst)))))
+
+перепишем эту функцию с помощью cond
+
+(defun our-member (obj lst)
+  (cond ((atom lst) nil)
+        ((eql (car lst) obj) lst)
+        (t (our-member obj (cdr lst)))))
+
+вызов
+
+> (cond (99))
+99
+
+
+
+
+конструкция case
+
+(defun month-length (mon)
+  (case mon
+        ((jan mar may jul aug oct dec) 31)
+        ((apr jun sept nov) 30)
+        (feb (if (leap-year) 29 28))
+        (otherwise "unknown month")))
+
+вызов
+
+> (case 99 (99))
+NIL
+
+
+
+
+Итерации
+
+
+основной итерационный оператор do
+суть оператора
+
+(defun factorial (n)
+  (do ((j n (- j 1))
+       (f 1 (* j f)))
+      ((= j 0) f)))
+
+есть еще do*
+
+итерация по списку осуществляется с помощью dolist
+
+
+dotimes
+работа dotimes
+
+> (dotimes (x 5 x)
+(format t "~A " x))
+0 1 2 3 4
+5
+
+
+функция mapc
+похожа на mapcar, но она не строит список из вычисленных значений,
+более гибка чем dolist
+моежт выполнять итерацию параллельно сразу по нескольким спискам
+
+вызов
+
+> (mapc #’(lambda (x y)
+(format t "~A ~A " x y))
+’(hip flip slip)
+’(hop flop slop))
+HIP HOP FLIP FLOP SLIP SLOP
+(HIP FLIP SLIP)
+
+
+
+Множественные значения
+
+функция values
+с ее помощью можно возвратить множественные значения
+
+> (values ’a nil (+ 2 4))
+A
+NIL
+6
+
+без аргументов
+
+> (values)
+> (let ((x (values)))
+x)
+NIL
+
+
+
+множественные значения могут передаваться
+через несколько вызовов
+
+> ((lambda () ((lambda () (values 1 2)))))
+1
+2
+
+
+multiple-value-bind
+чтобы получить несколько значений
+
+> (multiple-value-bind (x y z) (values 1 2 3)
+(list x y z))
+(1 2 3)
+> (multiple-value-bind (x y z) (values 1 2)
+(list x y z))
+(1 2 NIL)
+
+
+
+функция которая печатает текущее время
+
+> (multiple-value-bind (s m h) (get-decoded-time)
+(format nil "~A:~A:~A" h m s))
+"4:32:13"
+
+
+
+multiple-value-call
+передаст какой-л множественной функции значение в качестве
+аргументов
+
+> (multiple-value-call #’+ (values 1 2 3))
+6
+
+
+работа функции multiple-value-list
+
+> (multiple-value-list (values ’a ’b ’c))
+(A B C)
+
+
+
+
+Прерывание выполнения
+
+вызов return
+прервет работу
+выйдет из блока в любой момент
+
+спец. операторы
+catch и throw
+
+catch
+
+(defun super ()
+  (catch ’abort
+    (sub)
+    (format t "We’ll never see this.")))
+
+
+(defun sub ()
+(throw ’abort 99))
+
+вызов
+
+> (super)
+99
+
+
+throw
+
+вызов error
+
+> (progn
+(error "Oops! ")
+(format t "After the error. "))
+Error: Oops!
+Options: :abort, :backtrace
+>>
+
+
+
+конструкция unwind-protect
+
+> (setf x 1)
+1
+> (catch ’abort
+(unwind-protect
+(throw ’abort 99)
+(setf x 2)))
+99
+> x
+2
 
 
 
 
 
+ПРИМЕР
+АРИФМЕТИКА НАД ДАТАМИ
+
+преобразование дат в целые числа
+
+(defconstant month
+  #(0 31 59 90 120 151 181 212 243 273 304 334 365))
+
+
+(defconstant yzero 2000)
+
+
+(defun leap? (y)
+  (and (zerop (mod y 4))
+       (or (zerop (mod y 400))
+           (not (zerop (mod y 100))))))
+
+
+(defun date->num (d m y)
+  (+ (- d 1) (month-num m y) (year-num y)))
+
+
+(defun month-num (m y)
+  (+ (svref month ( - m 1))
+     (if (and (> m 2) (leap? y)) 1 0)))
+
+
+(defun year-num (y)
+  (let ((d 0))
+    (if (>= y yzero)
+        (dotimes (i (- y yzero) d)
+          (incf d (year-days (+ yzero i))))
+        (dotimes (i (- yzero y) (- d))
+          (incf d (year-days (+ y i)))))))
+
+
+(defun year-days (y) (if (leap? y) 366 365))
 
 
 
+преобазование целых чисел в даты
+
+(defun num->date (n)
+  (multiple-value-bind (y left) (num-year n)
+    (multiple-value-bind (m d) (num-month left y)
+      (values d m y))))
 
 
+(defun num-year (n)
+  (if (< n 0)
+      (do* ((y (- yzero 1) (- y 1))
+            (d (- (year-days y)) (- d (year-days y))))
+           ((<= d n) (values y (- n d))))
+      (do* ((y yzero (+ y 1))
+            (prev 0 d)
+            (d (year-days y) (+ d (year-days y))))
+           ((> d n) (values y (- n prev))))))
+
+
+(defun num-month (n y)
+  (if (leap? y)
+      (cond ((= n 59) (values 2 29))
+            ((> n 59) (nmon (- n 1)))
+            (t        (nmon n)))
+      (nmon n)))
+
+
+(defun nmon (n)
+  (let ((m (position n month :test #’<)))
+    (values m (+ 1 (- n (svref month (- m 1)))))))
+
+
+(defun date+ (d m y n)
+  (num->date (+ (date->num d m y) n)))
 
 
 
