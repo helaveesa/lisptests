@@ -138,6 +138,73 @@ CL-USER> (car (cdr (cdr (cdr '(пантера коалла пума лениве
 ЛЕНИВЕЦ
 
 упр 4
+определить функцию,
+которая принимает два аргумента и возвращает наибольший из них
+
+выдает ошибку:
+
+invalid number of elements in
+    ((LISTP '(X Y)) (> X Y) (MASSAGE MAXIMUM "x") (< X Y)
+     (MASSAGE MAXIMUM "y"))
+  to satisfy lambda list
+    (SB-C::TEST SB-C::THEN &OPTIONAL SB-C::ELSE):
+  between 2 and 3 expected, but 5 found
+   [Condition of type SB-INT:COMPILED-PROGRAM-ERROR]
+
+на вот этот код:
+
+CL-USER> (defun maximum (x y)
+           (if (listp '(x y))
+               (> x y)
+               (massage maximum "x")
+               (< x y)
+               (massage maximum "y")))
+; in: DEFUN MAXIMUM
+;     (IF (LISTP '(X Y))
+;         (> X Y)
+;         (MASSAGE MAXIMUM "x")
+;         (< X Y)
+;         (MASSAGE MAXIMUM "y"))
+;
+; caught ERROR:
+;   error while parsing arguments to special form IF:
+;     invalid number of elements in
+;       ((LISTP '(X Y)) (> X Y) (MASSAGE MAXIMUM "x") (< X Y)
+;        (MASSAGE MAXIMUM "y"))
+;     to satisfy lambda list
+;       (SB-C::TEST SB-C::THEN &OPTIONAL SB-C::ELSE):
+;     between 2 and 3 expected, but 5 found
+
+;     (SB-INT:NAMED-LAMBDA MAXIMUM
+;         (X Y)
+;       (BLOCK MAXIMUM
+;         (IF (LISTP '(X Y))
+;             (> X Y)
+;             (MASSAGE MAXIMUM "x")
+;             (< X Y)
+;             (MASSAGE MAXIMUM "y"))))
+; ==>
+;   #'(SB-INT:NAMED-LAMBDA MAXIMUM
+;         (X Y)
+;       (BLOCK MAXIMUM
+;         (IF (LISTP '(X Y))
+;             (> X Y)
+;             (MASSAGE MAXIMUM "x")
+;             (< X Y)
+;             (MASSAGE MAXIMUM "y"))))
+;
+; caught STYLE-WARNING:
+;   The variable X is defined but never used.
+;
+; caught STYLE-WARNING:
+;   The variable Y is defined but never used.
+;
+; compilation unit finished
+;   caught 1 ERROR condition
+;   caught 2 STYLE-WARNING conditions
+STYLE-WARNING: redefining COMMON-LISP-USER::MAXIMUM in DEFUN
+MAXIMUM
+
 
 
 
