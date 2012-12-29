@@ -205,6 +205,39 @@ CL-USER> (defun maximum (x y)
 STYLE-WARNING: redefining COMMON-LISP-USER::MAXIMUM in DEFUN
 MAXIMUM
 
+изменила код в условии:
+
+CL-USER> (defun maximum (x y)
+           (if (listp '(x y))
+               (> x y)
+               (< x y)))
+STYLE-WARNING: redefining COMMON-LISP-USER::MAXIMUM in DEFUN
+MAXIMUM
+CL-USER> (maximum 8 2)
+T
+CL-USER> (maximum 2 8)
+NIL
+
+вот пример кода по возвращению только максимального аргумента
+
+CL-USER> (defun maximum (x y z)
+           (if (list '(x y z))
+               (> x y z)))
+STYLE-WARNING: redefining COMMON-LISP-USER::MAXIMUM in DEFUN
+MAXIMUM
+CL-USER> (maximum 10 6 2)
+T
+CL-USER> (maximum 6 10 2)
+NIL
+CL-USER> (maximum 2 6 10)
+NIL
+
+
+теперь функция работает, но возвращая только истину или ложь,
+а мне нужн, чтобы она возвращала максимальное значение (число)
+
+
+
 
 
 
