@@ -506,6 +506,8 @@ i=7
 http://homelisp.ru/help/classic_funct.html#DOTIMES
 
 
+попробуем решить задачу с точками с помощью dotimes
+
 
 
 
