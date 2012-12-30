@@ -508,6 +508,39 @@ http://homelisp.ru/help/classic_funct.html#DOTIMES
 
 попробуем решить задачу с точками с помощью dotimes
 
+используем функции:
+do
+format
+progn
+>
+
+(DO (
+      (i 1 (+ i 1))
+      (j 1 (+ j 1)))
+      ((> j 5) (printline 'ok) (printline 'ok) (printline 'ok))
+      (print 'i=) (print i) (prints " ") (print 'j=) (printline j)
+)
+
+
+CL-USER> (defun tochka (b)
+           (do ((x 0 (+ x 1)))
+               ((>= x b))
+             (progn
+               (format t "~% x=~A" "."))))
+STYLE-WARNING: redefining COMMON-LISP-USER::TOCHKA in DEFUN
+TOCHKA
+CL-USER> (tochka 6)
+
+ x=.
+ x=.
+ x=.
+ x=.
+ x=.
+ x=.
+NIL
+
+
+
 
 
 
