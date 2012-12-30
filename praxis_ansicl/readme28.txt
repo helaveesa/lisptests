@@ -540,6 +540,28 @@ CL-USER> (tochka 6)
 NIL
 
 
+Верная версия
+
+CL-USER> (defun tochka (b)
+           (do ((x 0 (+ x 1)))
+               ((>= x b))
+             (progn
+               (format t "." "~% x=~A"))))
+;
+; caught STYLE-WARNING:
+;   Too many arguments (1) to FORMAT ".": uses at most 0.
+;   See also:
+;     The ANSI Standard, Section 22.3.10.2
+;
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+STYLE-WARNING: redefining COMMON-LISP-USER::TOCHKA in DEFUN
+TOCHKA
+CL-USER> (tochka 6)
+......
+NIL
+
+
 
 
 
