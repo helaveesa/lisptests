@@ -562,6 +562,108 @@ CL-USER> (tochka 6)
 NIL
 
 
+(b)
+
+предложить определение функции, которая возвращает
+количество символов "а" в заданном списке
+
+
+построение списков - с помощью cons
+
+(cons 'a '(b c d))
+(A B C D)
+
+функция, которая возвращает t, если ее аргумент - список
+list
+
+новые функции можно определить с помощью defun
+принимает три или более аргументов
+
+функция вывода - format
+принимает два или более аргументов
+
+
+CL-USER> (defun our-member (obj lst)
+           (if (null lst)
+              nil
+              (if (eql (car lst) obj)
+               obj
+               (our-member obj (cdr lst))
+               (do ((obj 0 (+ obj 1)))
+                   ((= obj a))
+                 (progn
+                   (format t "a" "~% obj=~A"))))))
+
+
+; in: DEFUN OUR-MEMBER
+;     (IF (EQL (CAR LST) OBJ)
+;         OBJ
+;         (OUR-MEMBER OBJ (CDR LST))
+;         (DO ((OBJ 0 (+ OBJ 1))) ((= OBJ A)) (PROGN (FORMAT T "a" "~% obj=~A"))))
+;
+; caught ERROR:
+;   error while parsing arguments to special form IF:
+;     invalid number of elements in
+;       ((EQL (CAR LST) OBJ) OBJ (OUR-MEMBER OBJ (CDR LST))
+;        (DO ((OBJ 0 #)) ((= OBJ A)) (PROGN (FORMAT T "a" "~% obj=~A"))))
+;     to satisfy lambda list
+;       (SB-C::TEST SB-C::THEN &OPTIONAL SB-C::ELSE):
+;     between 2 and 3 expected, but 4 found
+
+;     (SB-INT:NAMED-LAMBDA OUR-MEMBER
+;         (OBJ LST)
+;       (BLOCK OUR-MEMBER
+;         (IF (NULL LST)
+;             NIL
+;             (IF (EQL # OBJ)
+;                 OBJ
+;                 (OUR-MEMBER OBJ #)
+;                 (DO # # #)))))
+; ==>
+;   #'(SB-INT:NAMED-LAMBDA OUR-MEMBER
+;         (OBJ LST)
+;       (BLOCK OUR-MEMBER
+;         (IF (NULL LST)
+;             NIL
+;             (IF (EQL # OBJ)
+;                 OBJ
+;                 (OUR-MEMBER OBJ #)
+;                 (DO # # #)))))
+;
+; caught STYLE-WARNING:
+;   The variable OBJ is defined but never used.
+;
+; compilation unit finished
+;   caught 1 ERROR condition
+;   caught 1 STYLE-WARNING condition
+OUR-MEMBER
+CL-USER> (our-member 'a '(a b c a d e f a a r t a))
+
+
+вернул ошибку на данный код:
+
+Execution of a form compiled with errors.
+Form:
+  (IF (EQL (CAR LST) OBJ)
+    OBJ
+    (OUR-MEMBER OBJ (CDR LST))
+    (DO ((OBJ 0 (+ OBJ 1))) ((= OBJ A)) (PROGN (FORMAT T a ~%
+    obj=~A))))
+Compile-time error:
+  error while parsing arguments to special form IF:
+  invalid number of elements in
+    ((EQL (CAR LST) OBJ) OBJ (OUR-MEMBER OBJ (CDR LST))
+     (DO ((OBJ 0 (+ OBJ 1))) ((= OBJ A)) (PROGN (FORMAT T "a" "~%
+     obj=~A"))))
+  to satisfy lambda list
+    (SB-C::TEST SB-C::THEN &OPTIONAL SB-C::ELSE):
+  between 2 and 3 expected, but 4 found
+   [Condition of type SB-INT:COMPILED-PROGRAM-ERROR]
+
+
+
+
+
 
 
 
