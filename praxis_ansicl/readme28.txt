@@ -661,6 +661,140 @@ Compile-time error:
    [Condition of type SB-INT:COMPILED-PROGRAM-ERROR]
 
 
+Исполнение форме составлен с ошибками.
+Форма:
+   (IF (EQL (CAR LST) OBJ)
+     OBJ
+     (OUR-ЧЛЕНОВ OBJ (CDR LST))
+     (DO ((OBJ 0 (+ OBJ 1))) ((= OBJ)) (PROGN (FORMAT T ~%
+     Объект = ~))))
+Ошибка времени компиляции:
+   Ошибка при разборе аргументов в специальной форме, ЕСЛИ:
+   неверное число элементов в
+     ((EQL (CAR LST) OBJ) OBJ (OUR-ЧЛЕНОВ OBJ (CDR LST))
+      (DO ((OBJ 0 (+ OBJ 1))) ((= OBJ)) (PROGN (FORMAT T "" "~%
+      Объект = ~ "))))
+   , чтобы удовлетворить лямбда-список
+     (SB-C :: TEST SB-C :: ТОГДА И ДОПОЛНИТЕЛЬНЫЕ SB-C :: ELSE):
+   между 2 и 3 ожидали, но 4 найдено
+
+CL-USER> (defun letter (obj lst)
+           (if (null lst)
+              nil
+              (find #\a lst)))
+
+
+; in: DEFUN LETTER
+;     (SB-INT:NAMED-LAMBDA LETTER
+;         (OBJ LST)
+;       (BLOCK LETTER
+;         (IF (NULL LST)
+;             NIL
+;             (FIND #\a LST))))
+; ==>
+;   #'(SB-INT:NAMED-LAMBDA LETTER
+;         (OBJ LST)
+;       (BLOCK LETTER
+;         (IF (NULL LST)
+;             NIL
+;             (FIND #\a LST))))
+;
+; caught STYLE-WARNING:
+;   The variable OBJ is defined but never used.
+;
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+LETTER
+CL-USER> (letter 'a '(a b c d a f r a g a))
+NIL
+
+сработало условие пустого списка
+редактируем снова
+
+вернул вот такую ошибку:
+
+Value of #\a in (= X #\a) is #\a, not a NUMBER.
+   [Condition of type SIMPLE-TYPE-ERROR]
+
+на вот этот код:
+
+CL-USER> (defun letter-a (x lst)
+           (if (null lst)
+               nil)
+               (if (= x #\a)
+                   (+ x 1)
+                   lst))
+
+
+
+; in: DEFUN LETTER-A
+;     (= X #\a)
+;
+; caught WARNING:
+;   Constant #\a conflicts with its asserted type NUMBER.
+;   See also:
+;     The SBCL Manual, Node "Handling of Types"
+;
+; compilation unit finished
+;   caught 1 WARNING condition
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a 0 '(a b a c d a))
+
+вот такая ошибка:
+
+#\a found where a LOOP keyword or LOOP type keyword expected
+current LOOP context: COLLECT CHAR #\a.
+   [Condition of type SB-INT:COMPILED-PROGRAM-ERROR]
+
+на вот этот код:
+
+CL-USER> (defun letter-a (char lst)
+           (if (null lst)
+               nil)
+               (loop for char across lst collect char #\a))
+
+
+
+; in: DEFUN LETTER-A
+;     (LOOP FOR CHAR ACROSS LST
+;           COLLECT CHAR #\a)
+;
+; caught ERROR:
+;   during macroexpansion of (LOOP FOR CHAR ...). Use *BREAK-ON-SIGNALS* to
+;   intercept:
+;
+;    #\a found where a LOOP keyword or LOOP type keyword expected
+;   current LOOP context: COLLECT CHAR #\a.
+
+;     (SB-INT:NAMED-LAMBDA LETTER-A
+;         (CHAR LST)
+;       (BLOCK LETTER-A
+;         (IF (NULL LST)
+;             NIL)
+;         (LOOP FOR CHAR ACROSS LST
+;               COLLECT CHAR #\a)))
+; ==>
+;   #'(SB-INT:NAMED-LAMBDA LETTER-A
+;         (CHAR LST)
+;       (BLOCK LETTER-A
+;         (IF (NULL LST)
+;             NIL)
+;         (LOOP FOR CHAR ACROSS LST
+;               COLLECT CHAR #\a)))
+;
+; caught STYLE-WARNING:
+;   The variable CHAR is defined but never used.
+;
+; compilation unit finished
+;   caught 1 ERROR condition
+;   caught 1 STYLE-WARNING condition
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a #\a '(a b a c d a))
+
+
+
 
 
 
