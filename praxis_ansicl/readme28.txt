@@ -794,6 +794,94 @@ LETTER-A
 CL-USER> (letter-a #\a '(a b a c d a))
 
 
+вывести букву а
+
+CL-USER> (format t "a" "~% ~A")
+a
+NIL
+
+
+Итерация по списку
+
+(dolist (x '(a b c d e))
+        (print x))
+
+A
+B
+C
+D
+E
+NIL
+
+
+Два частых варианта использования format
+
+(format t "string") ; напечатает строку в поток вывода
+(format nil "string") ; вернёт полученную строку
+
+
+
+Исполнит все аргументы, но вернуть значение последнего
+
+(progn 1 2 3)
+
+3
+
+
+Исполнит все аргументы, но вернуть значение первого
+
+(prog1 1 2 3)
+
+1
+
+
+Замерить время выполнения участка кода
+
+(defun add-n-squares (n)
+  (do ((i 0 (+ i 1))
+       (sum 0 (+ sum (* i i))))
+    ((> i n) sum)))
+
+(time (add-n-squares 10000))
+
+Evaluation took:
+  0.001 seconds of real time
+  0.004000 seconds of total run time (0.004000 user, 0.000000 system)
+  400.00% CPU
+  3,090,464 processor cycles
+  212,792 bytes consed
+
+333383335000
+
+
+
+Создать хэш-таблицу изначально большого размера.
+
+(defparameter *my-hash* (make-hash-table :size 100000))
+; *MY-HASH*
+(hash-table-size *my-hash*)
+; 100000
+(time (dotimes (n 100000) (setf (gethash n *my-hash*) n)))
+; Compiling LAMBDA NIL:
+; Compiling Top-Level Form:
+;
+; Evaluation took:
+;   0.04 seconds of real time
+;   0.04 seconds of user run time
+;   0.0 seconds of system run time
+;   0 page faults and
+;   0 bytes consed.
+; NIL
+
+
+
+
+Источник:
+
+http://ru.najomi.org/common-lisp
+
+
+
 
 
 
