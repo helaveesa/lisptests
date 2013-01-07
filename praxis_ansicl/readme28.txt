@@ -997,6 +997,44 @@ http://www.ctc.msiu.ru/materials/Book/node57.html
    (format t "*glob*=~A")
 ----------------------------------------------------------
 
+сначала напечатаем имя функции с параметрами
+
+(defun letter-a (lst)
+
+теперь составим цикл:
+
+(do ((i 0))
+      ((>= i (length lst)))
+    (progn
+      (print (nth i lst))
+      (setf i (+ i 1))))
+
+теперь введем локальную переменную, куда можно будет записать итог
+подсчета букв а
+
+(let (result 0))
+
+теперь напишем условие, при котором будет выполняться цикл
+
+(if (null lst)
+    (let (result 0))
+    (char= #\a (length lst)))
+
+
+вот код:
+
+(defun letter-a (lst)
+           (do ((i 0))
+               ((>= i (length lst)))
+             (progn
+               (print (nth i lst))
+               (setf i (+ i 1)))
+           (if (null lst)
+               (lst)
+               (char= #\a (length lst)))))
+
+
+
 
 
 
