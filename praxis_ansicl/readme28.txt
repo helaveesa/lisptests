@@ -1033,6 +1033,106 @@ http://www.ctc.msiu.ru/materials/Book/node57.html
                (lst)
                (char= #\a (length lst)))))
 
+вызов функции:
+
+(letter-a '(#\b #\c #\d #\a #\f #\t #\a #\g #\k #\a))
+
+
+вернул ошибку:
+
+Value of #1=(LENGTH LST) in
+  (CHAR= #\a #1#)
+is
+  10,
+not a
+  CHARACTER.
+   [Condition of type SIMPLE-TYPE-ERROR]
+
+
+на вот этот код:
+
+CL-USER> (defun letter-a (lst)
+           (let ((result)))
+           (do ((i 0))
+               ((>= i (length lst)))
+             (progn
+               (print (nth i lst))
+               (setf i (+ i 1)))
+           (if (null lst)
+               (lst)
+               (char= #\a (length lst)))))
+; in: DEFUN LETTER-A
+;     (LET ((RESULT))
+;       )
+;
+; caught STYLE-WARNING:
+;   The variable RESULT is defined but never used.
+
+;     (CHAR= #\a (LENGTH LST))
+;
+; caught WARNING:
+;   Derived type of (LENGTH LST) is
+;     (VALUES (MOD 536870909) &OPTIONAL),
+;   conflicting with its asserted type
+;     CHARACTER.
+;   See also:
+;     The SBCL Manual, Node "Handling of Types"
+
+; in: DEFUN LETTER-A
+;     (LST)
+;
+; caught STYLE-WARNING:
+;   undefined function: LST
+;
+; compilation unit finished
+;   Undefined function:
+;     LST
+;   caught 1 WARNING condition
+;   caught 2 STYLE-WARNING conditions
+LETTER-A
+CL-USER> (letter-a '(#\b #\c #\d #\a #\f #\t #\a #\g #\k #\a))
+
+#\b
+
+
+пробуем другой вариант:
+будем проверять код по частям:
+
+сначала проверим цикл:
+
+CL-USER> (defun letter-a (lst)
+           (do ((i 0))
+               ((>= i (length lst)))
+             (progn
+               (print (nth i lst))
+               (setf i (+ i 1)))))
+
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(b c d a e f s a))
+
+B
+C
+D
+A
+E
+F
+S
+A
+NIL
+
+nth - это доступ к частям списка, функция, которая помогает получить
+элемент с определенным индексом
+
+если убрать (setf i (+ i 1)) вот эту строчку
+цикл никогда не закончится
+
+
+
+
+
+
+
 
 
 
