@@ -1158,6 +1158,103 @@ CL-USER> (letter-a '(a b c s d f c v g))
                (print (nth i lst))
                (setf i (+ i 1))))))
 
+вернул мне ошибку:
+
+((NULL LST) NIL (CHAR= #\a NTH LST) (PROGN (SETF I (+ I 1))))
+  to satisfy lambda list
+    (SB-C::TEST SB-C::THEN &OPTIONAL SB-C::ELSE):
+  between 2 and 3 expected, but 4 found
+   [Condition of type SB-INT:COMPILED-PROGRAM-ERROR]
+
+
+на вот этот код:
+
+CL-USER> (defun letter-a (lst)
+           (let (result i)
+             (format t "~%~A" lst)
+           (do ((i 0))
+               ((>= i (length lst)))
+             (if (null lst)
+                 nil
+                 (char= #\a nth lst)
+             (progn
+               (setf i (+ i 1)))))))
+; in: DEFUN LETTER-A
+;     (IF (NULL LST)
+;         NIL
+;         (CHAR= #\a NTH LST)
+;         (PROGN (SETF I (+ I 1))))
+;
+; caught ERROR:
+;   error while parsing arguments to special form IF:
+;     invalid number of elements in
+;       ((NULL LST) NIL (CHAR= #\a NTH LST) (PROGN (SETF I #)))
+;     to satisfy lambda list
+;       (SB-C::TEST SB-C::THEN &OPTIONAL SB-C::ELSE):
+;     between 2 and 3 expected, but 4 found
+
+;     (LET (RESULT I)
+;       (FORMAT T "~%~A" LST)
+;       (DO ((I 0))
+;           ((>= I (LENGTH LST)))
+;         (IF (NULL LST)
+;             NIL
+;             (CHAR= #\a NTH LST)
+;             (PROGN (SETF #)))))
+;
+; caught STYLE-WARNING:
+;   The variable RESULT is defined but never used.
+;
+; caught STYLE-WARNING:
+;   The variable I is defined but never used.
+;
+; compilation unit finished
+;   caught 1 ERROR condition
+;   caught 2 STYLE-WARNING conditions
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(#\a #\b #\c #\d #\a #\f #\a #\g #\a))
+
+(a b c d a f a g a)
+
+
+напечатал, вернул мне список, который я ввела в вызове функции
+
+не понимаю, что не так в условии "если":
+
+CL-USER> (defun letter-a (lst)
+           (do ((i 0))
+               ((>= i (length lst)))
+             (if (null lst)
+                 nil
+                 (char= #\a (nth lst))
+                 (progn
+                   (setf i (+ i 1)
+                         (format t "~% ~A" nth i))))))
+; in: DEFUN LETTER-A
+;     (IF (NULL LST)
+;         NIL
+;         (CHAR= #\a (NTH LST))
+;         (PROGN
+;          (SETF I (+ I 1)
+;                (FORMAT T "~% ~A" NTH I))))
+;
+; caught ERROR:
+;   error while parsing arguments to special form IF:
+;     invalid number of elements in
+;       ((NULL LST) NIL (CHAR= #\a (NTH LST))
+;        (PROGN
+;         (SETF I #
+;               #)))
+;     to satisfy lambda list
+;       (SB-C::TEST SB-C::THEN &OPTIONAL SB-C::ELSE):
+;     between 2 and 3 expected, but 4 found
+;
+; compilation unit finished
+;   caught 1 ERROR condition
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+
 
 
 
