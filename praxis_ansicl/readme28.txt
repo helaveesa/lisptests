@@ -1109,7 +1109,7 @@ CL-USER> (defun letter-a (lst)
 
 STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
 LETTER-A
-CL-USER> (letter-a '(b c d a e f s a))
+CL-USER> (letter-a '(#/b #/c #/a #/e #/f #/s #/a))
 
 B
 C
@@ -1126,6 +1126,38 @@ nth - это доступ к частям списка, функция, кото
 
 если убрать (setf i (+ i 1)) вот эту строчку
 цикл никогда не закончится
+
+теперь нужно написать часть по сравнению
+
+(char= #/a (nth lst))
+
+
+отдельные части кода работают:
+
+CL-USER> (defun letter-a (lst)
+             (if (null lst)
+                 nil
+                 (progn
+                   (print "Вывод кол-ва встречаемых символов а на
+             экран"))))
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(a b c s d f c v g))
+
+"Вывод кол-ва встречаемых символов а на экран"
+"Вывод кол-ва встречаемых символов а на экран"
+
+
+(defun letter-a (lst)
+           (do ((i 0))
+               ((>= i (length lst)))
+             (if (null lst)
+                 nil
+                 (char= #/a nth)
+             (progn
+               (print (nth i lst))
+               (setf i (+ i 1))))))
+
 
 
 
