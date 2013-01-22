@@ -1255,27 +1255,93 @@ CL-USER> (defun letter-a (lst)
 STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
 LETTER-A
 
+продолжение...
 
+CL-USER> (defun letter-a (lst)
+           (let ((result 0))
+             (do ((i 0))
+                 ((>= i (length lst)))
+               (if (null lst)
+                   nil
+                   (if (char= #\a (nth lst))
+                       (progn
+                         (print (nth i lst))
+                         (setf i (+ i 1))))))))
+; in: DEFUN LETTER-A
+;     (NTH LST)
+;
+; caught WARNING:
+;   The function was called with one argument, but wants exactly two.
 
+;     (LET ((RESULT 0))
+;       (DO ((I 0))
+;           ((>= I (LENGTH LST)))
+;         (IF (NULL LST)
+;             NIL
+;             (IF (CHAR= #\a #)
+;                 (PROGN # #)))))
+;
+; caught STYLE-WARNING:
+;   The variable RESULT is defined but never used.
 
+;     (SB-INT:NAMED-LAMBDA LETTER-A
+;         (LST)
+;       (BLOCK LETTER-A
+;         (LET ((RESULT 0))
+;           (DO (#)
+;               (#)
+;             (IF #
+;                 NIL
+;                 #)))))
+; ==>
+;   #'(SB-INT:NAMED-LAMBDA LETTER-A
+;         (LST)
+;       (BLOCK LETTER-A
+;         (LET ((RESULT 0))
+;           (DO (#)
+;               (#)
+;             (IF #
+;                 NIL
+;                 #)))))
+;
+; caught STYLE-WARNING:
+;   (The function was previously called with two arguments, but wants at most one.)
+;
+; compilation unit finished
+;   caught 1 WARNING condition
+;   caught 2 STYLE-WARNING conditions
+LETTER-A
+CL-USER> (letter-a '(b c d a e f s a))
 
+вернул ошибку:
+неверное число аргументов: 1
 
+другой вариант:
 
+CL-USER> (defun letter-a (lst)
+           (do ((i 0))
+               ((>= i (length lst)))
+             (if (null lst)
+                 nil
+                 (if (count #\a (lst) :test #'equal)
+                     (progn
+                       (print (nth i lst))
+                       (setf i (+ i 1)))))))
 
+; in: DEFUN LETTER-A
+;     (LST)
+;
+; caught STYLE-WARNING:
+;   undefined function: LST
+;
+; compilation unit finished
+;   Undefined function:
+;     LST
+;   caught 1 STYLE-WARNING condition
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(#\a #\b #\c #\a #\d #\a))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+пишет, что Функция COMMON-LISP-USER :: LST не определено.
+надо ее определить
 
