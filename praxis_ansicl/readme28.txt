@@ -1345,3 +1345,52 @@ CL-USER> (letter-a '(#\a #\b #\c #\a #\d #\a))
 пишет, что Функция COMMON-LISP-USER :: LST не определено.
 надо ее определить
 
+ошибка на код:
+
+Value of (SETQ I #1=(+ I 1)) in
+  (PRINT RESULT (SETF I #1#))
+is
+  1,
+not a
+  (OR STREAM (MEMBER NIL T)).
+
+CL-USER> (defun letter-a (lst)
+           (let ((result 0))
+             (do ((i 0))
+                 ((>= i (length lst)))
+               (if (null lst)
+                   nil
+                   (if (count #\a '(lst) :test #'equal)
+                       (progn
+                         (print result
+                                (setf i (+ i 1)))))))))
+; in: DEFUN LETTER-A
+;     (PRINT RESULT (SETF I (+ I 1)))
+;
+; caught WARNING:
+;   Derived type of (SETQ I (+ I 1)) is
+;     (VALUES (INTEGER 1) &OPTIONAL),
+;   conflicting with its asserted type
+;     (OR STREAM (MEMBER NIL T)).
+;   See also:
+;     The SBCL Manual, Node "Handling of Types"
+;
+; compilation unit finished
+;   caught 1 WARNING condition
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(#\a #\b #\c #\a #\d #\a))
+
+вот вариант возврата численного кол-ва заданного символа
+
+CL-USER> (defun letter-a ()
+                   (count #\a "b c d a d c s a f a" :test #'equal))
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a)
+3
+
+но, это случай, когда мне четко задан список из конечного числа
+элементов,
+этот список конечен и я его задаю сама.
+
