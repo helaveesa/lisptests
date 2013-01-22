@@ -1381,7 +1381,7 @@ STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
 LETTER-A
 CL-USER> (letter-a '(#\a #\b #\c #\a #\d #\a))
 
-вот вариант возврата численного кол-ва заданного символа
+вот вариант возврата численного кол-ва заданного символа В СТРОКЕ
 
 CL-USER> (defun letter-a ()
                    (count #\a "b c d a d c s a f a" :test #'equal))
@@ -1390,7 +1390,14 @@ LETTER-A
 CL-USER> (letter-a)
 3
 
-но, это случай, когда мне четко задан список из конечного числа
-элементов,
-этот список конечен и я его задаю сама.
+CL-USER> (defun letter-a ()
+                   (count #\a "b c d a d c s a f a a f a d a s a a" :test #'equal))
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a)
+8
+
+но, это случай, когда мне четко задана строка, НЕ список, из конечного числа
+элементов.
+
 
