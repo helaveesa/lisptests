@@ -1574,6 +1574,27 @@ LETTER-A
 CL-USER> (letter-a '(#\a #\b #\a #\c #\a #\d))
 NIL
 
+отладка кода
+
+CL-USER> (defun letter-a (lst)
+           (let ((result 0))
+             (dolist (x lst)
+               (progn
+                 (format t "~%~A : ~A" x lst)
+                 (if (char= #\a x)
+                     (setf result (+ result 1)))
+                 result))))
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(#\a #\b #\a #\c #\a #\d))
+
+a : (a b a c a d)
+b : (a b a c a d)
+a : (a b a c a d)
+c : (a b a c a d)
+a : (a b a c a d)
+d : (a b a c a d)
+NIL
 --------------------------------------------------
 --------------------------------------------------------
 
