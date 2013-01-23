@@ -1522,6 +1522,23 @@ CL-USER> (letter-a '(#\a #\b #\c #\d #\a))
 Источник
 http://it.kgsu.ru/Lisp/lisp0114.html
 
+
+
+-------------------------------------
+РЕШЕНИЕ ПРО БУКВУ А
+ВСЕ ВХОЖДЕНИЯ БУКВЫ А В СПИСОК
+
+--------------------------------------
+КОД
+
+CL-USER> (defun extr (a lst) (cond ((null lst) nil)
+                                   ((eq a (car lst)) (cons a (extr a (cdr lst))))
+                                   (t (extr a (cdr lst)))))
+EXTR
+CL-USER> (extr 'a '(a b c a b c a a a n))
+(A A A A A)
+------------------------------------------------------------------------------------------
+
 ex 9
 summit
 
