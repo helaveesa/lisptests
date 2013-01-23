@@ -1559,6 +1559,24 @@ STYLE-WARNING: redefining COMMON-LISP-USER::SUMLIST in DEFUN
 SUMLIST
 
 ------------------------------------------------------------------------------------------
+------------------------------
+вот новый вариант:
+
+CL-USER> (defun letter-a (lst)
+           (let ((result 0))
+             (dolist (x lst)
+               (progn
+               (if (char= #\a x)
+                   (setf result (+ result 1)))
+             result))))
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(#\a #\b #\a #\c #\a #\d))
+NIL
+
+--------------------------------------------------
+--------------------------------------------------------
+
 
 ex 9
 
