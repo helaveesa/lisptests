@@ -1668,6 +1668,30 @@ a
 5
 NIL
 
+проблема со скобками потому и нил
+
+********************
+ИТОГОВЫЙ ВАРИАНТ!!!
+********************
+CL-USER> (defun letter-a (lst)
+           (let ((result 0))
+             (dolist (x lst)
+               (progn
+                 (format t "~%~A : ~A" x lst)
+                 (if (char= #\a x) (setf result (+ result 1)) )))
+             result))
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(#\a #\b #\c #\a #\a #\d))
+
+a : (a b c a a d)
+b : (a b c a a d)
+c : (a b c a a d)
+a : (a b c a a d)
+a : (a b c a a d)
+d : (a b c a a d)
+3
+******************************************************************
 --------------------------------------------------
 --------------------------------------------------------
 
