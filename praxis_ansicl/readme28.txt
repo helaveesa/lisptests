@@ -1528,6 +1528,8 @@ http://it.kgsu.ru/Lisp/lisp0114.html
 РЕШЕНИЕ ПРО БУКВУ А
 ВСЕ ВХОЖДЕНИЯ БУКВЫ А В СПИСОК
 
+источник
+http://www.cyberforum.ru/lisp/thread662906.html
 --------------------------------------
 КОД
 
@@ -1537,9 +1539,30 @@ CL-USER> (defun extr (a lst) (cond ((null lst) nil)
 EXTR
 CL-USER> (extr 'a '(a b c a b c a a a n))
 (A A A A A)
+
+
+теперь надо посчитать все буквы а в получившемся списке после вызова
+функции extr
+
+CL-USER> (defun extr (a lst) (cond ((null lst) nil)
+                                   ((eq a (car lst)) (cons a (extr a (cdr lst))))
+                                   (t (extr a (cdr lst)))))
+STYLE-WARNING: redefining COMMON-LISP-USER::EXTR in DEFUN
+EXTR
+CL-USER> (extr 'a '(a b c a d f s a f a c a a))
+(A A A A A A)
+CL-USER> (defun sumlist (x)
+                 (cond ((null x) 0)
+                       ((atom x) x)
+                       (t (+ (sumlist (car x)) (sumlist (cdr x)))))
+STYLE-WARNING: redefining COMMON-LISP-USER::SUMLIST in DEFUN
+SUMLIST
+
 ------------------------------------------------------------------------------------------
 
 ex 9
+
+
 summit
 
 Пусть имеется произвольный список, состоящий из чисел. Нужно
@@ -1593,6 +1616,41 @@ SUMLIST
 CL-USER> (sumlist '(2 3 4))
 9
 
+------------------------
 
+Имеется произвольный список, состоящая из букв латинского алфавита и
+цифр, к ней необходимо применить следующие действия:
+1)второй и третий атомы поменять местами
+2)второй и четвертый атомы поменять местами
+3)сосчитать сумму чисел во всем списке
+4)сосчитать количество чисел во всем списке
+
+Допустим есть a  '(1 2 3 4 5 6 7 8 9 10)
+
+1) (cons (car a)
+        (cons (caddr a)
+              (cons (cadr a) (cdddr a))))
+
+2) (cons (car a)
+        (cons (cadddr a)
+              (cons (cadd a)
+                    (cons (cadr a) (cddddr a))))
+
+3) (apply #'+ a)
+
+3.1)(defun sum (s)
+ (if (null s)
+     0
+     (+ (car a) (sum (cdr s)))))
+(sum a)
+
+4)
+(defun len (s)
+ (if (null s)
+     0
+     (+ 1 (len (cdr s)))))
+(len a)
+
+--------------------------------------------------------------
 
 

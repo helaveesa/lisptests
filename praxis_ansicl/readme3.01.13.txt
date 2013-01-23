@@ -222,4 +222,32 @@ CL-USER> (povtor)
 The value B is not of type NUMBER.
 значение В не относится к типу NUMBER
 
+реализация collect
+
+CL-USER>  (defun collect (x)
+            (cond ((null x) nil)
+                  (t (append (extr (car x) x)
+                             (collect (remove (car x) x))))))
+STYLE-WARNING: redefining COMMON-LISP-USER::COLLECT in DEFUN
+COLLECT
+CL-USER> (collect '(5 1 2 3 1 2 3 1 2 2 3 3 1 1 5))
+(5 5 1 1 1 1 1 2 2 2 2 3 3 3 3)
+
+
+Функция PAIR строит из двух списков список пар (ассоциативный
+список). Оба аргумента функции должны быть списками.
+
+(pair '(a b c d) '(1 2 3 4))
+==> ((a . 1) (b . 2) (c . 3) (d . 4))
+
+
+(pair '(a b c d e f) '(1 2 3))
+==> ((a . 1) (b . 2) (c . 3) (d) (e) (f))
+
+
+(pair '(a b c d) '(1 2 3 4 5))
+==> ((a . 1) (b . 2) (c . 3) (d . 4))
+
+
+
 
