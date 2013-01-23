@@ -147,4 +147,79 @@ http://nostoc.stanford.edu/Docs/livetutorials/functions.html
 http://homelisp.ru/help/lib_funct.html
 ------------------------------------------
 
+ошибка:
+The function COMMON-LISP-USER::COMPRESS is undefined.
+
+на вот этот код:
+CL-USER> (defun povtor (lst)
+           (compress '(lst)
+                     (sort '(lst) #'<)))
+; in: DEFUN POVTOR
+;     (SORT '(LST) #'<)
+;
+; caught WARNING:
+;   Destructive function SORT called on constant data.
+;   See also:
+;     The ANSI Standard, Special Operator QUOTE
+;     The ANSI Standard, Section 3.2.2.3
+
+;     (SB-INT:NAMED-LAMBDA POVTOR
+;         (LST)
+;       (BLOCK POVTOR (COMPRESS '(LST) (SORT '(LST) #'<))))
+; ==>
+;   #'(SB-INT:NAMED-LAMBDA POVTOR
+;         (LST)
+;       (BLOCK POVTOR (COMPRESS '(LST) (SORT '(LST) #'<))))
+;
+; caught STYLE-WARNING:
+;   The variable LST is defined but never used.
+
+; in: DEFUN POVTOR
+;     (COMPRESS '(LST) (SORT '(LST) #'<))
+;
+; caught STYLE-WARNING:
+;   undefined function: COMPRESS
+;
+; compilation unit finished
+;   Undefined function:
+;     COMPRESS
+;   caught 1 WARNING condition
+;   caught 2 STYLE-WARNING conditions
+POVTOR
+CL-USER> (povtor '(a b a c d b b c g c d))
+
+
+иначе
+
+CL-USER> (defun povtor ()
+           (compress '(a b a c d e f d b c e f c a b)
+                     (sort '(a b a c d e f d b c e f c a b) #'<)))
+; in: DEFUN POVTOR
+;     (SORT '(A B A C D E F D B C E F ...) #'<)
+;
+; caught WARNING:
+;   Destructive function SORT called on constant data.
+;   See also:
+;     The ANSI Standard, Special Operator QUOTE
+;     The ANSI Standard, Section 3.2.2.3
+
+;     (COMPRESS '(A B A C D E F D B C E F ...)
+;      (SORT '(A B A C D E F D B C E F ...) #'<))
+;
+; caught STYLE-WARNING:
+;   undefined function: COMPRESS
+;
+; compilation unit finished
+;   Undefined function:
+;     COMPRESS
+;   caught 1 WARNING condition
+;   caught 1 STYLE-WARNING condition
+STYLE-WARNING: redefining COMMON-LISP-USER::POVTOR in DEFUN
+POVTOR
+CL-USER> (povtor)
+
+выдал ошибку:
+The value B is not of type NUMBER.
+значение В не относится к типу NUMBER
+
 

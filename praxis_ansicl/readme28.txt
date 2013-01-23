@@ -1503,6 +1503,25 @@ CL-USER> (letter-a '(#\a #\b #\c #\d #\a))
 ;   undefined variable: NTH
 
 
+(DEFUN NTH (LAMBDA (N LST)
+   ; Функция возвращает N-й элемент списка LST ;
+      (COND ( (EQ N 1) (CAR LST) )
+            (    T     (NTH (- N 1) (CDR LST)) )
+      )
+   ))
+
+
+(DEFUN DELETE (LAMBDA (N LST)
+   ; Функция удаляет N-й элемент из списка LST ;
+      (COND ( (EQ N 1) (CDR LST) )
+            (  T  (CONS (CAR LST)
+                  (DELETE (- N 1) (CDR LST))) )
+      )
+   ))
+
+Источник
+http://it.kgsu.ru/Lisp/lisp0114.html
+
 ex 9
 summit
 
