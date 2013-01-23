@@ -1595,6 +1595,79 @@ c : (a b a c a d)
 a : (a b a c a d)
 d : (a b a c a d)
 NIL
+
+или
+
+ CL-USER> (defun letter-a (lst)
+           (let ((result 0))
+             (dolist (x lst)
+               (progn
+                 (format t "~%~A : ~A" x lst)
+                 (if (char= #\a x)
+                     (progn
+                       (format t "~%~A" x)
+                       (setf result (+ result 1))))
+                 result))))
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(#\a #\b #\a #\c #\a #\d))
+
+a : (a b a c a d)
+a
+b : (a b a c a d)
+a : (a b a c a d)
+a
+c : (a b a c a d)
+a : (a b a c a d)
+a
+d : (a b a c a d)
+NIL
+
+а так мы видим, что if отрабатывает встречая "а"
+
+
+строкой формат проследим все выводы буквы а
+
+CL-USER> (defun letter-a (lst)
+           (let ((result 0))
+             (dolist (x lst)
+               (progn
+                 (format t "~%~A : ~A" x lst)
+                 (if (char= #\a x)
+                     (progn
+                       (format t "~%~A" x)
+                       (setf result (+ result 1))))
+                 (format t "~%~A" result)
+                 result))))
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a '(#\a #\b #\a #\a #\a #\c #\c #\b #\a))
+
+a : (a b a a a c c b a)
+a
+1
+b : (a b a a a c c b a)
+1
+a : (a b a a a c c b a)
+a
+2
+a : (a b a a a c c b a)
+a
+3
+a : (a b a a a c c b a)
+a
+4
+c : (a b a a a c c b a)
+4
+c : (a b a a a c c b a)
+4
+b : (a b a a a c c b a)
+4
+a : (a b a a a c c b a)
+a
+5
+NIL
+
 --------------------------------------------------
 --------------------------------------------------------
 
