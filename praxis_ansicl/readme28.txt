@@ -1401,3 +1401,105 @@ CL-USER> (letter-a)
 элементов.
 
 
+(let ((a 3)(b 4)) (+ a b))    ; Функция let создаёт локальные
+переменные, присваивает им значения
+                              ; (в данном случае переменной a
+                              присваивается значение 3, а b - 4),
+                              ; после чего вычисляет и возвращает
+                              результат функции
+                              ; (в данном случае 7). Переменные
+                              локальны, следовательно
+                              ; попытка посчитать значение (+ a b) вне
+                              тела let приведёт к ошибке.
+
+
+code:
+
+CL-USER> (defun letter-a (lst)
+           (let ((result 0))
+             (do ((i 0))
+                 ((>= i (length lst)))
+               (if (null lst)
+                   result
+                   (if (char= #\a (nth lst))
+                       (progn
+                         (print (nth i lst))
+                         (setf i (+ i 1))))))))
+
+; in: DEFUN LETTER-A
+;     (NTH LST)
+;
+; caught WARNING:
+;   The function was called with one argument, but wants exactly two.
+;
+; compilation unit finished
+;   caught 1 WARNING condition
+LETTER-A
+
+функции не хватает еще одного аргумента
+
+можно просто создать список в функции
+а потом сравнить каждый его элемент с буквой а
+
+CL-USER> (defun letter-a ()
+           (dolist (x '(a b a c d a))
+                 (print x))
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+CL-USER> (letter-a)
+
+A
+B
+A
+C
+D
+A
+NIL
+
+теперь надо сравнить каждый элемент списка с буквой а
+при этом при каждом совпадении с буквой а
+в переменную записывать +1
+
+CL-USER> (defun letter-a (lst)
+           (let ((result 0))
+             (dolist (x lst)
+               (if (char= #\a nth x lst)
+                   (setf result (+ result 1)))
+               result)))
+
+
+;     (CHAR= #\a NTH X LST)
+; -->
+; --> (LAMBDA (#:G6 #:G5 #:G4 #:G3) (DECLARE (TYPE CHARACTER #:G6 #:G5 #:G4 #:G3)) (IF (CHAR= #:G6 #:G5) (IF (CHAR= #:G5 #:G4) (IF (CHAR= #:G4 #:G3) T NIL) NIL) NIL))
+; --> SB-C::%FUNCALL
+; ==>
+;   (#<SB-C::CLAMBDA
+;      :%SOURCE-NAME SB-C::.ANONYMOUS.
+;      :%DEBUG-NAME (LAMBDA (#:G6 #:G5 #:G4 #:G3) :IN LETTER-A)
+;      :KIND NIL
+;      :TYPE #<SB-KERNEL:BUILT-IN-CLASSOID FUNCTION (read-only)>
+;      :WHERE-FROM :DEFINED
+;      :VARS (#:G6 #:G5 #:G4 #:G3) {BEBB4F1}>
+;    #\a NTH X LST)
+;
+; caught WARNING:
+;   undefined variable: NTH
+;
+; compilation unit finished
+;   Undefined variable:
+;     NTH
+;   caught 1 WARNING condition
+STYLE-WARNING: redefining COMMON-LISP-USER::LETTER-A in DEFUN
+LETTER-A
+
+в данном коде есть недочеты:
+;   undefined variable: NTH
+
+вызов этой функции:
+
+CL-USER> (letter-a '(#\a #\b #\c #\d #\a))
+
+говорит нам:
+;   undefined variable: NTH
+
+
