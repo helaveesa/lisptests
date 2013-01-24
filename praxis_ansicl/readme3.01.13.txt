@@ -212,8 +212,15 @@ http://lisp.ru/page.php?id=23
 (defun new-union (a b)
  (if (not b)
       a
-      (if (member (car b) a)
-        (new-union a (cdr b))
+      (if (member (car b) a) ;;member - проверяет есть ли элемент в
+                             ;;спискепринадлежит ли элемент множеству задаваемому списком
+                             ;;пример
+                             ;;> (member ’b ’(a b c))
+                                 (B C)
+
+        (new-union a (cdr b)) ;;union - объединение, функция работает
+                              ;;с двумя списками имеет те же аргументы
+                              ;;по ключу, что и member
         (new-union (append a (list (car b))) (cdr b)))))
 
 or
