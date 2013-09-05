@@ -1,0 +1,30 @@
+CL-USER> (defun our-third (x)                                                                                                         
+           (car (cdr (cdr x))))                                                                                                       
+OUR-THIRD                                                                                                                             
+CL-USER> (our-third '(a b c d))                                                                                                       
+C                                                                                                                                     
+CL-USER> (our-third (a b c d))                                                                                                        
+                                                                                                                                      
+; in: OUR-THIRD (A B C D)                                                                                                             
+;     (A B C D)                                                                                                                       
+;                                                                                                                                     
+; caught STYLE-WARNING:                                                                                                               
+;   undefined function: A                                                                                                             
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: B                                                                                                             
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: C                                                                                                             
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: D                                                                                                             
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined function:                                                                                                               
+;     A                                                                                                                               
+;   Undefined variables:                                                                                                              
+;     B C D                                                                                                                           
+;   caught 3 WARNING conditions                                                                                                       
+;   caught 1 STYLE-WARNING condition                                                                                                  
+; Evaluation aborted on #<UNBOUND-VARIABLE B {BC68B31}>.
