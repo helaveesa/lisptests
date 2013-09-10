@@ -1,0 +1,36 @@
+CL-USER> (defun list (lst1 lst2)                                                                                                      
+           (if (equal '(lst1) '(lst2))                                                                                                
+               (+ 10 5)                                                                                                               
+               (print lst1)))
+; in: DEFUN LIST                                                                                                                      
+;     (SB-INT:NAMED-LAMBDA LIST                                                                                                       
+;         (LST1 LST2)                                                                                                                 
+;       (BLOCK LIST                                                                                                                   
+;         (IF (EQUAL '(LST1) '(LST2))                                                                                                 
+;             (+ 10 5)                                                                                                                
+;             (PRINT LST1))))                                                                                                         
+; ==>                                                                                                                                 
+;   #'(SB-INT:NAMED-LAMBDA LIST                                                                                                       
+;         (LST1 LST2)                                                                                                                 
+;       (BLOCK LIST                                                                                                                   
+;         (IF (EQUAL '(LST1) '(LST2))                                                                                                 
+;             (+ 10 5)                                                                                                                
+;             (PRINT LST1))))                                                                                                         
+;                                                                                                                                     
+; caught STYLE-WARNING:                                                                                                               
+;   The variable LST2 is defined but never used.                                                                                      
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   caught 1 STYLE-WARNING condition                                                                                                  
+STYLE-WARNING: redefining COMMON-LISP:LIST in DEFUN                                                                                   
+; Evaluation aborted on #<SYMBOL-PACKAGE-LOCKED-ERROR "setting fdefinition of ~A" {B4CD799}>.
+CL-USER> (if (equal '(a b c) '(s x z))                                                                                                
+             (+ 200 5)                                                                                                                
+             (print "Not equal")
+                                                                                                                                      
+"Not equal"                                                                                                                           
+"Not equal"                                                                                                                           
+CL-USER> (if (equal '(a b c) '(a b c))                                                                                                
+             (+ 200 5)                                                                                                                
+             (print "Not equal"))
+205  

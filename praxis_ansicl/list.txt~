@@ -1,0 +1,285 @@
+список - это структура из элементов атомов и других списков.
+
+точечная пара - она же точечный список
+а.а
+
+
+простой список (a b c)
+
+числа в лиспе - тоже атомы
+Также атомы - T и NIL (истина и ложь)
+
+(a (b (c)))
+этот списко состоит:
+- из атома а
+- и из списка (b (c))
+
+(atom 'x)
+T
+
+(atom '(a b c))
+NIL
+
+eq - проверяет символы
+
+eql - проверяет однотипные числа и строки
+
+equal - проверяет списки
+
+car
+cdr
+cons
+
+defun
+
+listp
+предикат 
+
+CL-USER> (listp 'x)
+NIL                                                                                                                                   
+CL-USER> (listp '(a b c d))
+T 
+*************************************
+
+CL-USER> (defun equal-list (lst obj)                                                                                                  
+           (if (equal '(lst) '(obj))                                                                                                  
+               (+ 200 10)                                                                                                             
+               (print "Lists Not equal")))
+; in: DEFUN EQUAL-LIST                                                                                                                
+;     (SB-INT:NAMED-LAMBDA EQUAL-LIST                                                                                                 
+;         (LST OBJ)                                                                                                                   
+;       (BLOCK EQUAL-LIST                                                                                                             
+;         (IF (EQUAL '(LST) '(OBJ))                                                                                                   
+;             (+ 200 10)                                                                                                              
+;             (PRINT "Lists Not equal"))))                                                                                            
+; ==>                                                                                                                                 
+;   #'(SB-INT:NAMED-LAMBDA EQUAL-LIST                                                                                                 
+;         (LST OBJ)                                                                                                                   
+;       (BLOCK EQUAL-LIST                                                                                                             
+;         (IF (EQUAL '(LST) '(OBJ))                                                                                                   
+;             (+ 200 10)                                                                                                              
+;             (PRINT "Lists Not equal"))))                                                                                            
+;                                                                                                                                     
+; caught STYLE-WARNING:                                                                                                               
+;   The variable LST is defined but never used.                                                                                       
+;                                                                                                                                     
+; caught STYLE-WARNING:                                                                                                               
+;   The variable OBJ is defined but never used.                                                                                       
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   caught 2 STYLE-WARNING conditions                                                                                                 
+STYLE-WARNING: redefining COMMON-LISP-USER::EQUAL-LIST in DEFUN                                                                       
+EQUAL-LIST                                                                                                                            
+CL-USER> (equal-list '(a b c d) 'a)
+                                                                                                                                      
+"Lists Not equal"                                                                                                                     
+"Lists Not equal"
+
+CL-USER> (equal-list '(a b c d) '(a))
+                                                                                                                                      
+"Lists Not equal"                                                                                                                     
+"Lists Not equal"                                                                                                                     
+CL-USER> (equal-list '(a b c d) '(a b c d))
+                                                                                                                                      
+"Lists Not equal"                                                                                                                     
+"Lists Not equal"
+*****************************************
+
+CL-USER> (if (equal '(a b c d) '(a b c d))                                                                                            
+             (+ 200 10)                                                                                                               
+             (print "Lists Not equal"))
+210
+
+эта часть кода работает, а с определением функции defun - нет
+
+не срабатывает условие, когда списки равны
+
+**********************************************************************
+
+есть список, например (a b c d)
+
+нужно сравнить каждый элемент этого списка:
+- сравниваем первый элемент списка т.е. атом а сравниваем с неким объектом
+если Т - дальше сравниваем, следующий элемент списка, т.е. b и так далее
+
+если NIL - сравниваем также следующий элемент списка, т.е. b и так далее
+
+если список закончиля, и все элементы списка - списки - то Т
+если - // - -- Не списки - то NIL
+
+
+
+CL-USER> (equal (cdr '(a b c)) '(b c))
+T
+
+
+
+CL-USER> (equal (car '(a b c)) 'a)
+T
+
+
+
+
+CL-USER> (if (equal (car '(a b c)) 'a)                                                                                                
+             (print "Yes")                                                                                                            
+             (equal (car '(b c)) 'a))
+                                                                                                                                      
+"Yes"                                                                                                                                 
+"Yes" 
+
+CL-USER> (if (equal (car '(a b c)) 'b)                                                                                                
+             (print "Yes")                                                                                                            
+             (equal (car '(b c)) 'b))
+T 
+
+CL-USER> (if (equal (car '(a b c)) '(c))                                                                                              
+             (print "Yes")                                                                                                            
+             (equal (cdr '(b c)) '(c)))
+T 
+
+
+
+**************************************************
+
+CL-USER> (if (equal (cdr '(a b c)) '(b c))                                                                                            
+             (print "Yes, this is list")                                                                                              
+             (equal (car '(a b c)) 'a                                                                                                 
+             (print "No, this is atom")))
+                                                                                                                                      
+"Yes, this is list"                                                                                                                   
+"Yes, this is list"
+
+
+CL-USER> (if (equal (cdr '(a b c)) '(a b c))                                                                                          
+             (print "Yes, this is list")                                                                                              
+             (equal (car '(a b c)) 'a                                                                                                 
+             (print "No, this is atom")))
+                                                                                                                                      
+"No, this is atom"
++ ERROR
+
+
+****************************************************
+
+CL-USER> (defun funny ()                                                                                                              
+           (if (equal (cdr '(lst)) '(lst))                                                                                            
+               (print "Yes, this is list")                                                                                            
+               (equal (car '(lst)) 'atom                                                                                              
+                      (print "No, this is atom"))))
+; in: DEFUN FUNNY                                                                                                                     
+;     (EQUAL (CAR '(LST)) 'ATOM (PRINT "No, this is atom"))                                                                           
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   The function was called with three arguments, but wants exactly two.                                                              
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   caught 1 WARNING condition                                                                                                        
+STYLE-WARNING: redefining COMMON-LISP-USER::FUNNY in DEFUN                                                                            
+FUNNY                                                                                                                                 
+CL-USER> (funny)
+                                                                                                                                      
+"No, this is atom" ; Evaluation aborted on #<SB-INT:SIMPLE-PROGRAM-ERROR "invalid number of arguments: ~S" {CA8F021}>.
+
+*****************************************************************
+
+вот варианты функций НЕ в общем виде, пр которых в одном случае сравниваются два списка, и в другом - списко и атом
+
+первый элемент списка сравнивается с атомом
+CL-USER> (if (equal (cdr '(a b c d)) '(a b c d))                                                                                      
+             (print "Yes, this is list")                                                                                              
+             (equal (car '(a b c d)) 'a                                                                                               
+                    (print "Lists not equal, 2-element - atom")))
+                                                                                                                                      
+"Lists not equal, 2-element - atom" ; Evaluation aborted on #<SB-INT:SIMPLE-PROGRAM-ERROR "invalid number of arguments: ~S" {C4AC2B1}\
+
+
+сравниваются два списка
+CL-USER> (if (equal (cdr '(a b c d)) '(b c d))                                                                                        
+             (print "Yes, this is list")                                                                                              
+             (equal (car '(a b c d)) 'a                                                                                               
+                    (print "Lists not equal, 2-element - atom")))
+                                                                                                                                      
+"Yes, this is list"                                                                                                                   
+"Yes, this is list"
+
+********************************************************************************
+
+теперь объединим эти два кода:
+
+CL-USER> (if (equal (cdr '(a b c d)) '(b c d))                                                                                        
+             (print "Yes, this is list")                                                                                              
+             (equal (car '(a b c d)) 'a                                                                                               
+                               (print "Lists not equal, 2-element - atom")))
+                                                                                                                                      
+"Yes, this is list"                                                                                                                   
+"Yes, this is list"
+
+случай, когда хвостовая часть первого списка совпадает со вторым списком
+
+и второй случай:
+
+CL-USER> (if (equal (cdr '(a b c d)) '(a b c d))                                                                                      
+             (print "Yes, this is list")                                                                                              
+             (equal (car '(a b c d)) 'a                                                                                               
+                               (print "Lists not equal, 2-element - atom")))
+                                                                                                                                      
+"Lists not equal, 2-element - atom"
+
+случай, когда хвостовая часть списка1 не равна списку2
+что свидетельствует о том, что выполнилось выражение:
+когда головная часть списка1 равна атому, с которым и сравнивался список
+
+***********************************************
+
+пример объявления и вызова функции, которая строит список:
+
+CL-USER> (defun construct ()                                                                                                          
+           (cons 'opel '(kia ford nissan)))
+STYLE-WARNING: redefining COMMON-LISP-USER::CONSTRUCT in DEFUN                                                                        
+CONSTRUCT                                                                                                                             
+CL-USER> (construct)
+(OPEL KIA FORD NISSAN)
+
+*****************************************
+
+есть два списка:
+1 список (от А)
+2 список (от В)
+нужно соединить эти два списка не переписывая
+нужно, чтобы наименование1 из списка А ссылалось на наименование3 списка В и так по всему списку
+
+например
+
+список А:
+
+1A. мыло
+
+2A. спички
+
+3A. вода
+
+4A. нож
+
+
+
+
+
+список В:
+
+1B. масло
+
+2B. бензин
+
+3B. валенки
+
+4B. соль
+
+_____ ссылки ______
+
+1А --> 2B --> 2A --> 4B --> 4A --> 1B --> 3A --> 3B
+
+(мыло.nil) --> (бензин.nil) --> (спички.nil) --> (соль.nil) --> (нож.nil) --> (масло.nil) --> (вода.nil) --> (валенки.nil)
+
+(мыло бензин спички соль нож масло вода валенки)
+
+

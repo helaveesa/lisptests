@@ -1,0 +1,41 @@
+CL-USER> (defun hello-world ()                                                                                                        
+           (format t "hello-world!"))
+HELLO-WORLD                                                                                                                           
+CL-USER> (defun verbose-sum (x y)                                                                                                     
+           "Sum any two numbers after printing a message."                                                                            
+           (format t "Summit ~d and ~d.~%" x y)                                                                                       
+           (+ x y))
+VERBOSE-SUM                                                                                                                           
+CL-USER> (verbose-sum 6 5)
+Summit 6 and 5.                                                                                                                       
+11                                                                                                                                    
+CL-USER> (defun foo (x)                                                                                                               
+           (* 2 x))
+FOO                                                                                                                                   
+CL-USER> (foo 6)
+12                                                                                                                                    
+CL-USER> (defun foo (n)                                                                                                               
+           (dotimes (i 10)                                                                                                            
+             (dotimes (j 10)                                                                                                          
+               (when (> (* i j) n)                                                                                                    
+                 (return-from foo (list i j))))))
+STYLE-WARNING: redefining COMMON-LISP-USER::FOO in DEFUN                                                                              
+FOO                                                                                                                                   
+CL-USER> (foo 5)
+(1 6)                                                                                                                                 
+CL-USER> (dotimes (i 4)                                                                                                               
+           (print i))
+                                                                                                                                      
+0                                                                                                                                     
+1                                                                                                                                     
+2                                                                                                                                     
+3                                                                                                                                     
+NIL                                                                                                                                   
+CL-USER> (eq 'a 'a)
+T                                                                                                                                     
+CL-USER> (eq 'a 'b)
+NIL                                                                                                                                   
+CL-USER> (eq 'cat (car '(cat dack)))
+T  
+L-USER> (equal '(a b c) '(d f g))
+NIL
