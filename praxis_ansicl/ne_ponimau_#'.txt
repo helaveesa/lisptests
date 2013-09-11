@@ -1,0 +1,21 @@
+CL-USER> (defun my-equal (lst1 lst2)                                                                                                  
+           (or (equal lst1 lst2)                                                                                                      
+               (and (listp lst1)                                                                                                      
+                    (listp lst2)                                                                                                      
+                    (my-equal (car lst1) (car lst2))                                                                                  
+                    (my-equal (cdr lst1) (cdr lst2)))))
+STYLE-WARNING: redefining COMMON-LISP-USER::MY-EQUAL in DEFUN                                                                         
+MY-EQUAL                                                                                                                              
+CL-USER> (my-equal '(a b c) '(z x c))
+NIL                                                                                                                                   
+CL-USER> (my-equal '(a b c) '(a))
+NIL                                                                                                                                   
+CL-USER> (my-equal '() '())
+T                                                                                                                                     
+CL-USER> (my-equal '(a b c) '())
+NIL                                                                                                                                   
+CL-USER> (my-equal '(a b c) '(a b c))
+T  
+
+
+

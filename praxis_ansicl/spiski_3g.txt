@@ -1,0 +1,196 @@
+Глава 3 СПИСКИ
+
+CL-USER> (setf x (cons 'a nil))
+                                                                                                                                      
+; in: SETF X                                                                                                                          
+;     (SETF X (CONS 'A NIL))                                                                                                          
+; ==>                                                                                                                                 
+;   (SETQ X (CONS 'A NIL))                                                                                                            
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: X                                                                                                             
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     X                                                                                                                               
+;   caught 1 WARNING condition                                                                                                        
+(A)                                                                                                                                   
+CL-USER> (car x)
+A                                                                                                                                     
+CL-USER> (cdr x)
+NIL  
+
+
+
+
+Список из трех ячеек
+
+CL-USER> (setf y (list 'a 'b 'c))
+                                                                                                                                      
+; in: SETF Y                                                                                                                          
+;     (SETF Y (LIST 'A 'B 'C))                                                                                                        
+; ==>                                                                                                                                 
+;   (SETQ Y (LIST 'A 'B 'C))                                                                                                          
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: Y                                                                                                             
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     Y                                                                                                                               
+;   caught 1 WARNING condition                                                                                                        
+(A B C)                                                                                                                               
+CL-USER> (car y)
+A                                                                                                                                     
+CL-USER> (cdr y)
+(B C) 
+
+
+
+
+Ситуация, когда элементы списка - тоже списки
+
+CL-USER> (setf z (list 'a (list 'b 'c) 'd))
+                                                                                                                                      
+;     (SETF Z (LIST 'A (LIST 'B 'C) 'D))                                                                                              
+; ==>                                                                                                                                 
+;   (SETQ Z (LIST 'A (LIST 'B 'C) 'D))                                                                                                
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: Z                                                                                                             
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     Z                                                                                                                               
+;   caught 1 WARNING condition                                                                                                        
+(A (B C) D)                                                                                                                           
+CL-USER> (car z)
+A                                                                                                                                     
+CL-USER> (cdr z)
+((B C) D)                                                                                                                             
+CL-USER> (car (cdr z))
+(B C)                                                                                                                                 
+CL-USER> (cddr z)
+(D)                                                                                                                                   
+CL-USER> (car (cddr z))
+D                                                                                                                                     
+CL-USER> (nthcdr 1 z)
+((B C) D)                                                                                                                             
+CL-USER> (nthcdr 2 z)
+(D)                                                                                                                                   
+CL-USER> 
+; No value
+CL-USER> (nthcdr 0 z)
+(A (B C) D)                                                                                                                           
+CL-USER> (nthcdr 3 z)
+NIL                                                                                                                                   
+CL-USER> (car (cdddr z))
+NIL  
+
+так же возвратить последнюю cons-ячейку списка может функция last
+
+пример вложенных списков
+
+
+
+
+
+
+проверка того, является ли объект cons-ячейкой
+
+CL-USER> (defun proverka (x)                                                                                                          
+           (or (null x) (consp x)))
+PROVERKA                                                                                                                              
+CL-USER> (proverka 'a)
+NIL                                                                                                                                   
+CL-USER> (proverka ())
+T
+
+
+
+проверка двух списков на равенство по мению equal
+т.е. идентичен ли список а списку в
+
+CL-USER> (defun my-equal (lst1 lst2)                                                                                                  
+           (if (equal (car lst1) (car lst2))                                                                                          
+               (equal (cdr lst1) (cdr lst2))                                                                                          
+               (print "list 1  not equal list 2")))
+STYLE-WARNING: redefining COMMON-LISP-USER::MY-EQUAL in DEFUN                                                                         
+MY-EQUAL                                                                                                                              
+CL-USER> (my-equal '(a b c) '(z x c))
+                                                                                                                                      
+"list 1  not equal list 2"                                                                                                            
+"list 1  not equal list 2"                                                                                                            
+CL-USER> (my-equal '(a b c) '(a b c))
+T                                                                                                                                     
+CL-USER> (my-equal '() '())
+T                                                                                                                                     
+CL-USER> (my-equal '(a (b c) d) '(d))
+                                                                                                                                      
+"list 1  not equal list 2"                                                                                                            
+"list 1  not equal list 2"
+
+
+
+
+
+Копирование
+
+copy-list
+
+Склеивание списков
+
+append
+
+Сжатие списка из атомов
+
+compress
+
+
+
+Рекурсия
+
+пример функции для определения длины списка:
+
+CL-USER> (defun len (lst)                                                                                                             
+           (if (null lst)                                                                                                             
+               0                                                                                                                      
+               (+ (len (cdr lst)) 1)))
+LEN                                                                                                                                   
+CL-USER> (len '(a b c d f))
+5 
+
+
+
+
+
+CL-USER> (defun our-member (obj lst)                                                                                                  
+           (if (null lst)                                                                                                             
+               0                                                                                                                      
+               (if (eql (car lst) obj)                                                                                                
+                   lst                                                                                                                
+                   (our-member obj (cdr lst)))))
+OUR-MEMBER                                                                                                                            
+CL-USER> (our-member 'a '(a b c d))
+(A B C D)                                                                                                                             
+CL-USER> (our-member 'a '())
+0                                                                                                                                     
+CL-USER> (our-member '(b c) '(a b c))
+0                                                                                                                                     
+CL-USER> (our-member 'a '(b c d))
+0                                                                                                                                     
+CL-USER> (our-member '() '(a b c d))
+0  
+CL-USER> (our-member '(a b c d) '(a s d x))
+0 
+
+
+
+
+
+
+
+
+
+
+
