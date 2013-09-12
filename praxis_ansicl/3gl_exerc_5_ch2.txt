@@ -1,0 +1,151 @@
+3 glava
+________
+EXERC. 5
+________
+
+функция pos+
+
+принимает список и возвращает новый,
+каждый элемент которого увеличен по сравнению с исходным на его положение в списке:
+
+> (pos+ ’(7 5 1 4))
+(7 6 3 7)
+
+НЕ забваем о том, что отсчет идет от ноля 0, 1, 2, 3 и так далее
+
+7 -0 =7
+5 -1 =6
+1 -2 =3
+4 -3 =7
+
+необходимо определить ее с помощью:
+- рекурсии (функция вызывающая сама себя)
+- итерации (организация обработки данных, 
+при которой действия повторяются многократно, 
+не приводя при этом к вызовам самих себя (в отличае от рекурсии))
+- mapcar (функция, котоая возвращает список, аргументы данной функции:
+первый - функция, которую нужно применить, последующие аргументы - списки,
+чьи элементы будут поставлять аргументы для этой функции)
+
+т.е. функция применяется к элементам аргументов-списков, беря от каждого
+списка по элементу. Результат вызова собирается в новый список
+
+пример:
+
+CL-USER> (mapcar #' (lambda (x) (* 2 x))                                                                                              
+                    (list 1 2 3))
+(2 4 6) 
+
+
+
+CL-USER> (mapcar #' + (list 1 2 3) (list 10 20 30))
+(11 22 33) 
+
+
+номер элемента в списке (индекс его) можно определить
+с помощью функции:
+
+(nth n list)
+
+CL-USER> (defun index ()                                                                                                              
+           (nth 0 '(7 5 1 4)))
+STYLE-WARNING: redefining COMMON-LISP-USER::INDEX in DEFUN                                                                            
+INDEX                                                                                                                                 
+CL-USER> (index)
+7                                                                                                                                     
+CL-USER> (defun index ()                                                                                                              
+           (nth 1 '(7 5 1 4)))
+STYLE-WARNING: redefining COMMON-LISP-USER::INDEX in DEFUN                                                                            
+INDEX                                                                                                                                 
+CL-USER> (index)
+5                                                                                                                                     
+CL-USER> (defun index ()                                                                                                              
+           (nth 2 '(7 5 1 4)))
+STYLE-WARNING: redefining COMMON-LISP-USER::INDEX in DEFUN                                                                            
+INDEX                                                                                                                                 
+CL-USER> (index)
+1                                                                                                                                     
+CL-USER> (defun index ()                                                                                                              
+           (nth 3 '(7 5 1 4)))
+STYLE-WARNING: redefining COMMON-LISP-USER::INDEX in DEFUN                                                                            
+INDEX                                                                                                                                 
+CL-USER> (index)
+4  
+
+
+
+теперь, зная индекс каждого элемента
+можно сложить каждый элемент списка с его индексом, соответственно
+
+т.е. к 7 прибавить ее индекс - т.е. 0 и так далее
+
+
+CL-USER> (defun index ()                                                                                                              
+           (+ 0 (nth 0 '(7 5 1 4))))
+STYLE-WARNING: redefining COMMON-LISP-USER::INDEX in DEFUN                                                                            
+INDEX                                                                                                                                 
+CL-USER> (index)
+7                                                                                                                                     
+CL-USER> (defun index ()                                                                                                              
+           (+ 1 (nth 1 '(7 5 1 4))))
+STYLE-WARNING: redefining COMMON-LISP-USER::INDEX in DEFUN                                                                            
+INDEX                                                                                                                                 
+CL-USER> (index)
+6                                                                                                                                     
+CL-USER> (defun index ()                                                                                                              
+           (+ 2 (nth 2 '(7 5 1 4))))
+STYLE-WARNING: redefining COMMON-LISP-USER::INDEX in DEFUN                                                                            
+INDEX                                                                                                                                 
+CL-USER> (index)
+3                                                                                                                                     
+CL-USER> (defun index ()                                                                                                              
+           (+ 3 (nth 3 '(7 5 1 4))))
+STYLE-WARNING: redefining COMMON-LISP-USER::INDEX in DEFUN                                                                            
+INDEX                                                                                                                                 
+CL-USER> (index)
+7 
+
+
+вот, но мы это сделали в несколько определений и несколько вызовов, 
+теперь это нужно написать одной функцией
+
+ниже приведены примеры вызовов функции, которая немного уменьшилась, приобрела общий вид:
+
+CL-USER> (defun mypos (x)                                                                                                             
+           (+ x (nth x '(7 5 1 4))))
+MYPOS                                                                                                                                 
+CL-USER> (mypos 0)
+7                                                                                                                                     
+CL-USER> (defun mypos (x)                                                                                                             
+           (+ x (nth x '(7 5 1 4))))
+STYLE-WARNING: redefining COMMON-LISP-USER::MYPOS in DEFUN                                                                            
+MYPOS                                                                                                                                 
+CL-USER> (mypos 1)
+6                                                                                                                                     
+CL-USER> (defun mypos (x)                                                                                                             
+           (+ x (nth x '(7 5 1 4))))
+STYLE-WARNING: redefining COMMON-LISP-USER::MYPOS in DEFUN                                                                            
+MYPOS                                                                                                                                 
+CL-USER> (mypos 2)
+3                                                                                                                                     
+CL-USER> (defun mypos (x)                                                                                                             
+           (+ x (nth x '(7 5 1 4))))
+STYLE-WARNING: redefining COMMON-LISP-USER::MYPOS in DEFUN                                                                            
+MYPOS                                                                                                                                 
+CL-USER> (mypos 3)
+7  
+
+
+
+теперь все эти уже 4 вызова надо переписать в один:
+т.е. чтобы функция сама вызывалась столько раз, сколько того требует условие
+(наличие элементов в списке)
+
+надо использовать рекурсию
+(как в общем-то и говорится в условии упражнения (задачи))
+
+
+
+
+
+
