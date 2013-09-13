@@ -1,0 +1,125 @@
+3 glava chapter 3
+__________
+
+EXERS. 7.
+__________
+
+3.5. Сжатие
+
+пример разработки простого механизма сжатия списков
+(кодирование повторов)
+
+алгоритм для списков:
+рис.3.6.
+
+функция compress 
+принимает списко из атомов и возвращает его сжатое представление:
+
+(compress '(1 1 1 0 1 0 0 0 0 1))
+((3 1) 0 1 (4 0) 1)
+
+
+код программы по сжатию - файл с именем cod_sjatie.lisp
+
+разберем этот код по частям, каждое определение функции defun:
+
+CL-USER> (defun n-elts (elt n)                                                                                                        
+           (if (> n 1)                                                                                                                
+               (list n elt)                                                                                                           
+               elt))
+STYLE-WARNING: redefining COMMON-LISP-USER::N-ELTS in DEFUN                                                                           
+N-ELTS                                                                                                                                
+CL-USER> (n-elts '(a b c d) 2)
+(2 (A B C D))                                                                                                                         
+CL-USER> (n-elts '(a b c d) 3)
+(3 (A B C D))                                                                                                                         
+CL-USER> (n-elts '(a b c d) 4)
+(4 (A B C D))                                                                                                                         
+CL-USER> (n-elts '(a) 4)
+(4 (A))                                                                                                                               
+CL-USER> (n-elts 'a 4)
+(4 A)   
+
+данная функция возвращает сжатое представление n элементов elt
+
+
+
+
+
+
+
+CL-USER> (defun compr (elt n lst)                                                                                                     
+           (if (null lst)                                                                                                             
+               (list (n-elts elt n))                                                                                                  
+               (let ((next (car lst)))                                                                                                
+                 (if (eql next elt)                                                                                                   
+                     (compr elt (+ n 1) (cdr lst))                                                                                    
+                     (cons (n-elts elt n)                                                                                             
+                           (compr next 1 (cdr lst)))))))
+COMPR                                                                                                                                 
+CL-USER> (compr 'a 1 '(a a a b b c))
+((4 A) (2 B) C)                                                                                                                       
+CL-USER> (compr '(a b c d e) 1 '(a a a b b c))
+((A B C D E) (3 A) (2 B) C)                                                                                                           
+CL-USER> (compr '(a) 1 '(a a a b b c))
+((A) (3 A) (2 B) C)  
+
+данная функция - рекурсивная, принимает аргументы:
+три штуки:
+- elt
+- n
+- lst
+
+elt - последний встречный элемент
+
+n - число его повторений
+
+lst - остаток списка, подлежащий дальнейшей клмпрессии
+
+
+
+
+
+
+
+CL-USER> (defun compress (x)                                                                                                          
+           (if (consp (x)                                                                                                             
+                      (compr (car x) 1 (cdr x))                                                                                       
+                      x)))
+; in: DEFUN COMPRESS                                                                                                                  
+;     (IF (CONSP (X) (COMPR (CAR X) 1 (CDR X)) X))                                                                                    
+;                                                                                                                                     
+; caught ERROR:                                                                                                                       
+;   error while parsing arguments to special form IF:                                                                                 
+;     invalid number of elements in                                                                                                   
+;       ((CONSP (X) (COMPR (CAR X) 1 (CDR X)) X))                                                                                     
+;     to satisfy lambda list                                                                                                          
+;       (SB-C::TEST SB-C::THEN &OPTIONAL SB-C::ELSE):                                                                                 
+;     between 2 and 3 expected, but 1 found                                                                                           
+                                                                                                                                      
+;     (SB-INT:NAMED-LAMBDA COMPRESS                                                                                                   
+;         (X)                                                                                                                         
+;       (BLOCK COMPRESS (IF (CONSP (X) (COMPR # 1 #) X))))                                                                            
+; ==>                                                                                                                                 
+;   #'(SB-INT:NAMED-LAMBDA COMPRESS                                                                                                   
+;         (X)                                                                                                                         
+;       (BLOCK COMPRESS (IF (CONSP (X) (COMPR # 1 #) X))))                                                                            
+;                                                                                                                                     
+; caught STYLE-WARNING:                                                                                                               
+;   The variable X is defined but never used.                                                                                         
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   caught 1 ERROR condition                                                                                                          
+;   caught 1 STYLE-WARNING condition                                                                                                  
+STYLE-WARNING: redefining COMMON-LISP-USER::COMPRESS in DEFUN                                                                         
+COMPRESS   
+
+определение происходит с ошибкаи
+именно данной функции
+
+
+загрузить программу в топлевел в емаксе
+(load "имя_файла.lisp"
+		.lsp")
+
+
