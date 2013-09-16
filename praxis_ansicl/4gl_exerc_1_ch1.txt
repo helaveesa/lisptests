@@ -1,0 +1,60 @@
+4 glava 
+
+___________
+
+EXERC. 1.
+
+___________
+
+Массивы
+
+создать массив - make-array
+первый агумент - список размерностей 
+
+> (setf arr (make-array ’(2 3) :initial-element nil))
+#<Simple-Array T (2 3) BFC4FE>
+
+
+
+создание массива 2Х3
+CL-USER> (setf arr (make-array '(2 3) :initial-element nil))
+                                                                                                                                      
+; in: SETF ARR                                                                                                                        
+;     (SETF ARR (MAKE-ARRAY '(2 3) :INITIAL-ELEMENT NIL))                                                                             
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY '(2 3) :INITIAL-ELEMENT NIL))                                                                               
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((NIL NIL NIL) (NIL NIL NIL))     
+
+
+
+
+чтобы получить элемент массива - нужно воспользоваться aref
+
+отсчет элементов с нуля
+
+CL-USER> (aref arr 0 0)
+NIL
+
+новое значение элемента массива можно установить,
+используя setf вместе с aref 
+
+CL-USER> (setf (aref arr 0 0) 'b)
+B 
+CL-USER> (aref arr 0 0)
+B
+
+
+массивы могут быть заданы буквально
+с помощью синтаксиса #na
+n - кол-во размерностей массива
+
+
+
