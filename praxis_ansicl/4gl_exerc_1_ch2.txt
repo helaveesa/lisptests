@@ -18,4 +18,415 @@ array-dimensions
 это функция, которая возващает список целых чисел,
 представляющих все размерности массива
 
+1. нужно создать массив
+пример создания одномерного массива с пятью элементами:
+CL-USER> (make-array 5)
+#(0 0 0 0 0) 
+
+мне нужно создать квадратный массив 
+(размерность произвольная n n)
+квадрат - это геометрическая фигура, с равной стороной a и b
+пусть у моего квадрата будут стороны: a b c d
+следовательно мне нужно задать четырехмерный массив
+
+массив - объект с элементами расположенными в соответствии с декартовой системой координат
+
+кол-во измерений массива - ранг
+
+у квадрата 4 стороны:
+CL-USER> (make-array 4)
+#(0 0 0 0) 
+
+создали массив с 4-мя элементами
+теперь надо задать их значения
+
+создадим массив с 2х2
+
+CL-USER> (setf arr (make-array '(2 2) :initial-element nil)) 
+                                                                                                                                      
+; in: SETF ARR                                                                                                                        
+;     (SETF ARR (MAKE-ARRAY '(2 2) :INITIAL-ELEMENT NIL))                                                                             
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY '(2 2) :INITIAL-ELEMENT NIL))                                                                               
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((NIL NIL) (NIL NIL)) 
+
+:initial-element - устанавливает начальное значение каждого элемента массива
+
+чтобы задать новое значение элемента массива 
+можно использовать setf вместе с aref
+
+aref начинат отсчет элементов с нуля
+
+CL-USER> (setf arr (make-array '(2 2) :initial-element nil))
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((NIL NIL) (NIL NIL))                                                                                                              
+CL-USER> (aref arr 0 0)
+NIL                                                                                                                                   
+CL-USER> (setf (aref arr 0 0) 'b)
+B 
+
+
+
+
+
+так как n - это размерность массива
+можно задать массив, который нам нужен буквально
+с помощью синтаксиса #na
+
+n - кол-во размерностей массива
+CL-USER> #1a(a b)
+#(A B)
+
+или так:
+CL-USER> #2a((a b) (c d))
+#2A((A B) (C D)) 
+
+
+CL-USER> (setf arr (make-array '(2 2) :initial-element 'a))
+                                                                                                                                      
+;     (SETF ARR (MAKE-ARRAY '(2 2) :INITIAL-ELEMENT 'A))                                                                              
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY '(2 2) :INITIAL-ELEMENT 'A))                                                                                
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((A A) (A A)) 
+
+
+CL-USER> (setf arr (make-array '(2 2) :initial-element 'b))
+                                                                                                                                      
+;     (SETF ARR (MAKE-ARRAY '(2 2) :INITIAL-ELEMENT 'B))                                                                              
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY '(2 2) :INITIAL-ELEMENT 'B))                                                                                
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((B B) (B B)) 
+
+
+
+
+новое назначение элемента массива
+CL-USER> (setf (aref arr 0 0) 'b)
+B                                                                                                                                     
+CL-USER> (aref arr 0 0)
+B 
+
+
+БУКВАЛЬНО задали массив:
+CL-USER> #2a((a b) (c d))
+#2A((A B) (C D)) 
+
+
+array-dimensions
+это функция, которая возващает список целых чисел,
+представляющих все размерности массива
+
+демонстрация работы данной функции:
+CL-USER> (array-dimensions (make-array '(2 3)))
+(2 3) 
+
+CL-USER> (array-dimensions (make-array 4))
+(4)
+
+передавать нужно именно число
+
+
+
+
+
+
+
+********************************************************************
+
+эксперименты
+
+создадим массивы от 0 до 4
+
+CL-USER> (make-array 0)
+#()                                                                                                                                   
+CL-USER> (make-array 1)
+#(0)                                                                                                                                  
+CL-USER> (make-array 2)
+#(0 0)                                                                                                                                
+CL-USER> (make-array 3)
+#(0 0 0)                                                                                                                              
+CL-USER> (make-array 4)
+#(0 0 0 0)
+
+
+зададим переменную arr, в которой присвоим значение созданного массива
+
+CL-USER> (setf arr (make-array 0))
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#()                                                                                                                                   
+CL-USER> (setf arr (make-array 4))
+                                                                                                                                      
+;     (SETF ARR (MAKE-ARRAY 4))                                                                                                       
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY 4))                                                                                                         
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#(0 0 0 0)  
+
+
+создадим новый массив, с ключевым аргументом :initial-element
+
+CL-USER> (setf arr (make-array '(3 3) :initial-element nil))
+                                                                                                                                      
+;     (SETF ARR (MAKE-ARRAY '(3 3) :INITIAL-ELEMENT NIL))                                                                             
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY '(3 3) :INITIAL-ELEMENT NIL))                                                                               
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((NIL NIL NIL) (NIL NIL NIL) (NIL NIL NIL))
+
+мы создали массив 3х3
+ключевой аргумент - в данном случае - NIL
+
+аналогичная операция, только ключ. аргумент не NIL, а 1:
+CL-USER> (setf arr (make-array '(3 3) :initial-element 1))
+                                                                                                                                      
+;     (SETF ARR (MAKE-ARRAY '(3 3) :INITIAL-ELEMENT 1))                                                                               
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY '(3 3) :INITIAL-ELEMENT 1))                                                                                 
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((1 1 1) (1 1 1) (1 1 1)) 
+
+
+получим теперь из этого массива 3Х3 элемент:
+отсчет ведем от ноля
+
+CL-USER> (aref arr 0 0)
+4                                                                                                                                     
+CL-USER> (aref arr 1 1)
+4                                                                                                                                     
+CL-USER> (aref arr 2 2)
+4 
+
+0, 1, 2 - всего три операции, и у нас массив размерностью 3Х3
+потому четвертый вызов:
+CL-USER> (aref arr 3 3)
+; Evaluation aborted on #<SB-INT:INVALID-ARRAY-INDEX-ERROR expected-type: (INTEGER 0 (3)) datum: 3>.
+вызовет ошибку
+
+ниже подтверждение этому
+CL-USER> (setf arr (make-array '(4 4) :initial-element 2))
+                                                                                                                                      
+;     (SETF ARR (MAKE-ARRAY '(4 4) :INITIAL-ELEMENT 2))                                                                               
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY '(4 4) :INITIAL-ELEMENT 2))                                                                                 
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((2 2 2 2) (2 2 2 2) (2 2 2 2) (2 2 2 2))                                                                                          
+CL-USER> (aref arr 0 0)
+2                                                                                                                                     
+CL-USER> (aref arr 1 1)
+2                                                                                                                                     
+CL-USER> (aref arr 2 2)
+2                                                                                                                                     
+CL-USER> (aref arr 3 3)
+2   
+
+мы создали массив 4Х4, и смогли осуществить, именно поэтому, 4 операции по получению элемента массива
+
+
+
+теперь снова создадим массив 3Х3
+и зададим новое значение элемента массива
+
+создание:
+
+CL-USER> (setf arr (make-array '(3 3) :initial-element 9))
+                                                                                                                                      
+;     (SETF ARR (MAKE-ARRAY '(3 3) :INITIAL-ELEMENT 9))                                                                               
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY '(3 3) :INITIAL-ELEMENT 9))                                                                                 
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((9 9 9) (9 9 9) (9 9 9)) 
+
+замена значения элемента массива:
+
+CL-USER> (setf (aref arr 0 0) '2)
+2                                                                                                                                     
+CL-USER> (aref arr 0 0)
+2 
+
+теперь в ячейке так сказать 0х0 - лежит значение не 9, а 2
+
+чтобы удостовериться точно, выведем на печать наш массив:
+CL-USER> (setf *print-array* t)
+T                                                                                                                                     
+CL-USER> arr
+#2A((2 9 9) (9 9 9) (9 9 9)) 
+
+действительно все так
+
+снова перепишем ячейку, но только уже 1Х1 и занесем туда значение 7, и выведем на печать
+CL-USER> (setf (aref arr 1 1) '7)
+7                                                                                                                                     
+CL-USER> (aref arr 1 1)
+7                                                                                                                                     
+CL-USER> (setf *print-array* t)
+T                                                                                                                                     
+CL-USER> arr
+#2A((2 9 9) (9 7 9) (9 9 9))
+
+
+и теперь в последний, третий раз - так как у нас массив 3Х3
+перепишем уже ячейку 2Х2, и запишем туда значени 2
+и выведем на печать, чтобы проверить
+
+CL-USER> (setf (aref arr 2 2) '2)
+2                                                                                                                                     
+CL-USER> (aref arr 2 2)
+2                                                                                                                                     
+CL-USER> (setf *print-array* t)
+T                                                                                                                                     
+CL-USER> arr
+#2A((2 9 9) (9 7 9) (9 9 2)) 
+
+все работает
+эксперимент окончен
+**************************************************************************************************
+
+у нас в данных по упражению задан массив, квадатный массив
+
+#2A((a b) (c d))
+
+и мы создали массив:
+CL-USER> (setf arr (make-array '(2 2) :initial-element 9))
+                                                                                                                                      
+;     (SETF ARR (MAKE-ARRAY '(2 2) :INITIAL-ELEMENT 9))                                                                               
+; ==>                                                                                                                                 
+;   (SETQ ARR (MAKE-ARRAY '(2 2) :INITIAL-ELEMENT 9))                                                                                 
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+#2A((9 9) (9 9))  
+значит, он тоже квадратный массив
+значит квадратный массив - этот то, у которого ячейка 2Х2, 
+то есть массив 2 на 2 будет называться квадратным
+т.е. массив (n n) - общий вид, куда вместо n подставляются размерности массива, который необходим
+массив 2Х2 - массив nХn - в общем виде
+
+далее, разберемся с данными массива
+
+у нас в массиве, числа: 9-ки
+а в задании - переменные (буквы)
+
+в случае, когда мы задаем массив буквально:
+
+CL-USER> #2a((a b) (c d))
+#2A((A B) (C D))
+
+мы получаем то, что в задании
+
+теперь этот массив надо повернуть по час. стрелке на 90 гр
+
+надо определить функцию, которая
+будет возвращать:
+
+#2A((C A) (D B))
+при вызове функции quarter-turn
+
+
+
+Использование функции:
+функция array-dimensions
+
+CL-USER> (defun massiv ()                                                                                                             
+           (setf arr #2a((a b) (c d)))                                                                                                
+           (array-dimensions arr))
+                                                                                                                                      
+; in: DEFUN MASSIV                                                                                                                    
+;     (SETF ARR #2A((A B) (C D)))                                                                                                     
+; ==>                                                                                                                                 
+;   (SETQ ARR #2A((A B) (C D)))                                                                                                       
+;                                                                                                                                     
+; caught WARNING:                                                                                                                     
+;   undefined variable: ARR                                                                                                           
+;                                                                                                                                     
+; compilation unit finished                                                                                                           
+;   Undefined variable:                                                                                                               
+;     ARR                                                                                                                             
+;   caught 1 WARNING condition                                                                                                        
+STYLE-WARNING: redefining COMMON-LISP-USER::MASSIV in DEFUN                                                                           
+MASSIV                                                                                                                                
+CL-USER> (massiv)
+(2 2) 
+
+то есть, если я верно понимаю, эта функция возвращает размерность массива,
+то есть размер массива 2Х2, который задавался в условии
+
+
 
